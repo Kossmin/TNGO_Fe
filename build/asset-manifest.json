@@ -1,0 +1,38 @@
+{
+  "files": {
+    "main.css": "/static/css/main.c636afc8.chunk.css",
+    "main.js": "/static/js/main.d7664c46.chunk.js",
+    "main.js.map": "/static/js/main.d7664c46.chunk.js.map",
+    "runtime-main.js": "/static/js/runtime-main.6456ac57.js",
+    "runtime-main.js.map": "/static/js/runtime-main.6456ac57.js.map",
+    "static/css/2.c2715b03.chunk.css": "/static/css/2.c2715b03.chunk.css",
+    "static/js/2.e2a81331.chunk.js": "/static/js/2.e2a81331.chunk.js",
+    "static/js/2.e2a81331.chunk.js.map": "/static/js/2.e2a81331.chunk.js.map",
+    "index.html": "/index.html",
+    "static/css/2.c2715b03.chunk.css.map": "/static/css/2.c2715b03.chunk.css.map",
+    "static/css/main.c636afc8.chunk.css.map": "/static/css/main.c636afc8.chunk.css.map",
+    "static/js/2.e2a81331.chunk.js.LICENSE.txt": "/static/js/2.e2a81331.chunk.js.LICENSE.txt",
+    "static/js/main.d7664c46.chunk.js.LICENSE.txt": "/static/js/main.d7664c46.chunk.js.LICENSE.txt",
+    "static/media/bg4.jpg": "/static/media/bg4.01ad1068.jpg",
+    "static/media/bg5.jpg": "/static/media/bg5.d60a95eb.jpg",
+    "static/media/blog-1.jpg": "/static/media/blog-1.c1c2e338.jpg",
+    "static/media/blog-2.jpg": "/static/media/blog-2.0e0b276c.jpg",
+    "static/media/blog-3.jpg": "/static/media/blog-3.e07746fd.jpg",
+    "static/media/blog-4.jpg": "/static/media/blog-4.a769e38b.jpg",
+    "static/media/default-avatar.png": "/static/media/default-avatar.8d0fd1b6.png",
+    "static/media/all.min.css": "/static/media/fa-solid-900.f4f93856.woff",
+    "static/media/full-screen-image-1.231907d3.jpg": "/static/media/full-screen-image-1.231907d3.jpg",
+    "static/media/full-screen-image-2.jpg": "/static/media/full-screen-image-2.e2e1e456.jpg",
+    "static/media/full-screen-image-3.jpg": "/static/media/full-screen-image-3.21a228cd.jpg",
+    "static/media/full-screen-image-4.a1bc03f2.jpg": "/static/media/full-screen-image-4.a1bc03f2.jpg",
+    "static/media/logo.svg": "/static/media/logo.103b5fa1.svg",
+    "static/media/light-bootstrap-dashboard-pro-react.scss?v=2.0.0": "/static/media/nucleo-icons.e8827b8a.svg"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.6456ac57.js",
+    "static/css/2.c2715b03.chunk.css",
+    "static/js/2.e2a81331.chunk.js",
+    "static/css/main.c636afc8.chunk.css",
+    "static/js/main.d7664c46.chunk.js"
+  ]
+}
