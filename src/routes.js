@@ -39,6 +39,7 @@ import LoginPage from "views/Pages/LoginPage.js";
 import RegisterPage from "views/Pages/RegisterPage.js";
 import LockScreenPage from "views/Pages/LockScreenPage.js";
 import Bicycles from "views/Bicycles";
+import BicycleTypes from "views/BicycleTypes";
 
 var routes = [
   {
@@ -49,11 +50,27 @@ var routes = [
     component: Dashboard,
   },
   {
+    collapse: true,
     path: "/bicycles",
-    layout: "/admin",
     name: "Bicycles",
+    state: "openComponents",
     icon: "nc-icon nc-chart-bar-32",
-    component: Bicycles,
+    views: [
+      {
+        path: "/bicycles",
+        layout: "/admin",
+        name: "Bicycles",
+        mini: "B",
+        component: Bicycles,
+      },
+      {
+        path: "/bicycles",
+        layout: "/admin",
+        name: "Bicycle Types",
+        mini: "T",
+        component: BicycleTypes,
+      },
+    ],
   },
   {
     path: "/trips",
@@ -62,64 +79,20 @@ var routes = [
     icon: "nc-icon nc-map-big",
     component: Bicycles,
   },
-  // {
-  //   collapse: true,
-  //   path: "/components",
-  //   name: "Components",
-  //   state: "openComponents",
-  //   icon: "nc-icon nc-app",
-  //   views: [
-  //     {
-  //       path: "/buttons",
-  //       layout: "/admin",
-  //       name: "Buttons",
-  //       mini: "B",
-  //       component: Buttons,
-  //     },
-  //     {
-  //       path: "/grid-system",
-  //       layout: "/admin",
-  //       name: "Grid System",
-  //       mini: "GS",
-  //       component: GridSystem,
-  //     },
-  //     {
-  //       path: "/panels",
-  //       layout: "/admin",
-  //       name: "Panels",
-  //       mini: "P",
-  //       component: Panels,
-  //     },
-  //     {
-  //       path: "/sweet-alert",
-  //       layout: "/admin",
-  //       name: "Sweet Alert",
-  //       mini: "SA",
-  //       component: SweetAlert,
-  //     },
-  //     {
-  //       path: "/notifications",
-  //       layout: "/admin",
-  //       name: "Notifications",
-  //       mini: "N",
-  //       component: Notifications,
-  //     },
-  //     {
-  //       path: "/icons",
-  //       layout: "/admin",
-  //       name: "Icons",
-  //       mini: "I",
-  //       component: Icons,
-  //     },
-  //     {
-  //       path: "/typography",
-  //       layout: "/admin",
-  //       name: "Typography",
-  //       mini: "T",
-  //       component: Typography,
-  //     },
-  //   ],
-  // },
+  {
+    path: "/stations",
+    layout: "/admin",
+    name: "Stations",
+    icon: "nc-icon nc-bank",
+    component: Bicycles,
+  },
+  {
+    path: "/payments",
+    layout: "/admin",
+    name: "Payments",
+    icon: "nc-icon nc-credit-card",
+    component: Bicycles,
+  },
   // {
   //   collapse: true,
   //   path: "/forms",

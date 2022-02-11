@@ -73,21 +73,6 @@ function Admin() {
           />
         </div>
       </div>
-      <FixedPlugin
-        setSidebarImageParent={(value) => setSidebarImage(value)}
-        sidebarDefaultImage={sidebarImage}
-        sidebarImages={[image1, image2, image3, image4]}
-        backgroundColors={[
-          "black",
-          "azure",
-          "green",
-          "orange",
-          "red",
-          "purple",
-        ]}
-        backgroundColor={sidebarBackground}
-        setSidebarBackgroundParent={(value) => setSidebarBackground(value)}
-      />
     </>
   );
 }
