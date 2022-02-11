@@ -1,4 +1,3 @@
-import React from "react";
 import {
   Badge,
   Button,
@@ -16,14 +15,14 @@ import {
 
 import "./Bicycles.css";
 
-const Trips = (props) => {
+const Stations = (props) => {
   return (
     <Container>
       <Row>
         <Col md="12">
           <Card className="regular-table-with-color">
             <Card.Header>
-              <Card.Title as="h4">Trips history</Card.Title>
+              <Card.Title as="h4">Stations</Card.Title>
               {/* <p className="card-category">Here is a subtitle for this table</p> */}
             </Card.Header>
             <Card.Body className="table-responsive p-0">
@@ -32,59 +31,59 @@ const Trips = (props) => {
                   <tr>
                     <th>ID</th>
                     <th>Name</th>
-                    <th>Salary</th>
-                    <th>From</th>
-                    <th>To</th>
+                    <th>Status</th>
+                    <th>Available bikes</th>
+                    <th>Location</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr className="success">
                     <td>1</td>
-                    <td>Dakota Rice (Success)</td>
-                    <td>$36,738</td>
-                    <td>Niger</td>
+                    <td>Dakota Rice</td>
+                    <td>Working</td>
+                    <td>8/12</td>
                     <td>Oud-Turnhout</td>
                   </tr>
-                  <tr>
+                  <tr className="success">
                     <td>2</td>
                     <td>Minerva Hooper</td>
-                    <td>$23,789</td>
-                    <td>Curaçao</td>
+                    <td>Working</td>
+                    <td>9/15</td>
                     <td>Sinaai-Waas</td>
                   </tr>
-                  <tr className="info">
+                  <tr className="success">
                     <td>3</td>
-                    <td>Sage Rodriguez (Info)</td>
-                    <td>$56,142</td>
-                    <td>Netherlands</td>
+                    <td>Sage Rodriguez</td>
+                    <td>Working</td>
+                    <td>4/10</td>
                     <td>Baileux</td>
                   </tr>
-                  <tr>
+                  <tr className="success">
                     <td>4</td>
                     <td>Philip Chaney</td>
-                    <td>$38,735</td>
-                    <td>Korea, South</td>
+                    <td>Working</td>
+                    <td>12/12</td>
                     <td>Overland Park</td>
                   </tr>
                   <tr className="danger">
                     <td>5</td>
                     <td>Doris Greene (Danger)</td>
-                    <td>$63,542</td>
-                    <td>Malawi</td>
+                    <td>Not Working</td>
+                    <td>0/9</td>
                     <td>Feldkirchen in Kärnten</td>
                   </tr>
-                  <tr>
+                  <tr className="success">
                     <td>6</td>
                     <td>Mason Porter</td>
-                    <td>$78,615</td>
-                    <td>Chile</td>
+                    <td>Working</td>
+                    <td>2/13</td>
                     <td>Gloucester</td>
                   </tr>
-                  <tr className="warning">
+                  <tr className="success">
                     <td>7</td>
                     <td>Mike Chaney (Warning)</td>
-                    <td>$38,735</td>
-                    <td>Romania</td>
+                    <td>Working</td>
+                    <td>3/8</td>
                     <td>Bucharest</td>
                   </tr>
                 </tbody>
@@ -110,4 +109,4 @@ const Trips = (props) => {
   );
 };
 
-export default Trips;
+export default Stations;

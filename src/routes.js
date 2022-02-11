@@ -40,6 +40,9 @@ import RegisterPage from "views/Pages/RegisterPage.js";
 import LockScreenPage from "views/Pages/LockScreenPage.js";
 import Bicycles from "views/Bicycles";
 import BicycleTypes from "views/BicycleTypes";
+import Trips from "views/Trips";
+import Stations from "views/Stations";
+import Payments from "views/Payments";
 
 var routes = [
   {
@@ -64,7 +67,7 @@ var routes = [
         component: Bicycles,
       },
       {
-        path: "/bicycles",
+        path: "/bicycletypes",
         layout: "/admin",
         name: "Bicycle Types",
         mini: "T",
@@ -77,21 +80,21 @@ var routes = [
     layout: "/admin",
     name: "Trips",
     icon: "nc-icon nc-map-big",
-    component: Bicycles,
+    component: Trips,
   },
   {
     path: "/stations",
     layout: "/admin",
     name: "Stations",
     icon: "nc-icon nc-bank",
-    component: Bicycles,
+    component: Stations,
   },
   {
     path: "/payments",
     layout: "/admin",
     name: "Payments",
     icon: "nc-icon nc-credit-card",
-    component: Bicycles,
+    component: Payments,
   },
   // {
   //   collapse: true,
