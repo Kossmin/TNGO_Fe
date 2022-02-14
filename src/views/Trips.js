@@ -12,6 +12,7 @@ import {
   Row,
   Col,
   Pagination,
+  FormControl,
 } from "react-bootstrap";
 
 import "./Bicycles.css";
@@ -19,6 +20,19 @@ import "./Bicycles.css";
 const Trips = (props) => {
   return (
     <Container>
+      <Row className="justify-content-end">
+        <Col xs="12" sm="5">
+          <Form className="d-flex">
+            <FormControl
+              type="search"
+              placeholder="Search By Id"
+              className="me-2"
+              aria-label="Search"
+            />
+            <Button variant="outline-success">Search</Button>
+          </Form>
+        </Col>
+      </Row>
       <Row>
         <Col md="12">
           <Card className="regular-table-with-color">
@@ -31,8 +45,9 @@ const Trips = (props) => {
                 <thead>
                   <tr>
                     <th>ID</th>
-                    <th>Name</th>
-                    <th>Salary</th>
+                    <th>Bicycle Id</th>
+                    <th>Time Start</th>
+                    <th>Time End</th>
                     <th>From</th>
                     <th>To</th>
                   </tr>
@@ -41,49 +56,56 @@ const Trips = (props) => {
                   <tr className="success">
                     <td>1</td>
                     <td>Dakota Rice (Success)</td>
-                    <td>$36,738</td>
+                    <td>14:25</td>
+                    <td>16:20</td>
                     <td>Niger</td>
                     <td>Oud-Turnhout</td>
                   </tr>
                   <tr>
                     <td>2</td>
                     <td>Minerva Hooper</td>
-                    <td>$23,789</td>
+                    <td>14:25</td>
+                    <td>16:20</td>
                     <td>Curaçao</td>
                     <td>Sinaai-Waas</td>
                   </tr>
                   <tr className="info">
                     <td>3</td>
                     <td>Sage Rodriguez (Info)</td>
-                    <td>$56,142</td>
+                    <td>14:25</td>
+                    <td>16:20</td>
                     <td>Netherlands</td>
                     <td>Baileux</td>
                   </tr>
                   <tr>
                     <td>4</td>
                     <td>Philip Chaney</td>
-                    <td>$38,735</td>
+                    <td>14:25</td>
+                    <td>16:20</td>
                     <td>Korea, South</td>
                     <td>Overland Park</td>
                   </tr>
                   <tr className="danger">
                     <td>5</td>
                     <td>Doris Greene (Danger)</td>
-                    <td>$63,542</td>
+                    <td>14:25</td>
+                    <td>16:20</td>
                     <td>Malawi</td>
                     <td>Feldkirchen in Kärnten</td>
                   </tr>
                   <tr>
                     <td>6</td>
                     <td>Mason Porter</td>
-                    <td>$78,615</td>
+                    <td>14:25</td>
+                    <td>16:20</td>
                     <td>Chile</td>
                     <td>Gloucester</td>
                   </tr>
                   <tr className="warning">
                     <td>7</td>
                     <td>Mike Chaney (Warning)</td>
-                    <td>$38,735</td>
+                    <td>14:25</td>
+                    <td>16:20</td>
                     <td>Romania</td>
                     <td>Bucharest</td>
                   </tr>

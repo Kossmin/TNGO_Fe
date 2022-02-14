@@ -11,6 +11,7 @@ import {
   Row,
   Col,
   Pagination,
+  FormControl,
 } from "react-bootstrap";
 
 import "./Bicycles.css";
@@ -18,6 +19,19 @@ import "./Bicycles.css";
 const Payment = (props) => {
   return (
     <Container>
+      <Row className="justify-content-end">
+        <Col xs="12" sm="5">
+          <Form className="d-flex">
+            <FormControl
+              type="search"
+              placeholder="Search By Id"
+              className="me-2"
+              aria-label="Search"
+            />
+            <Button variant="outline-success">Search</Button>
+          </Form>
+        </Col>
+      </Row>
       <Row>
         <Col md="12">
           <Card className="regular-table-with-color">
@@ -30,61 +44,69 @@ const Payment = (props) => {
                 <thead>
                   <tr>
                     <th>ID</th>
-                    <th>Name</th>
-                    <th>Salary</th>
-                    <th>Country</th>
-                    <th>City</th>
+                    <th>Payment code</th>
+                    <th>User Id</th>
+                    <th>Date</th>
+                    <th>Payment type</th>
+                    <th>Amount</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
                     <td>1</td>
-                    <td>Dakota Rice (Success)</td>
-                    <td>$36,738</td>
-                    <td>Niger</td>
-                    <td>Oud-Turnhout</td>
+                    <td>M1123</td>
+                    <td>1232</td>
+                    <td>14/2/2022</td>
+                    <td>Momo</td>
+                    <td>$200</td>
                   </tr>
                   <tr>
                     <td>2</td>
-                    <td>Minerva Hooper</td>
-                    <td>$23,789</td>
-                    <td>Curaçao</td>
-                    <td>Sinaai-Waas</td>
+                    <td>M1123</td>
+                    <td>1232</td>
+                    <td>14/2/2022</td>
+                    <td>Momo</td>
+                    <td>$200</td>
                   </tr>
                   <tr>
                     <td>3</td>
-                    <td>Sage Rodriguez (Info)</td>
-                    <td>$56,142</td>
-                    <td>Netherlands</td>
-                    <td>Baileux</td>
+                    <td>M1123</td>
+                    <td>1232</td>
+                    <td>14/2/2022</td>
+                    <td>Momo</td>
+                    <td>$200</td>
                   </tr>
                   <tr>
                     <td>4</td>
-                    <td>Philip Chaney</td>
-                    <td>$38,735</td>
-                    <td>Korea, South</td>
-                    <td>Overland Park</td>
+                    <td>M1123</td>
+                    <td>1232</td>
+                    <td>14/2/2022</td>
+                    <td>Momo</td>
+                    <td>$200</td>
                   </tr>
                   <tr>
                     <td>5</td>
-                    <td>Doris Greene (Danger)</td>
-                    <td>$63,542</td>
-                    <td>Malawi</td>
-                    <td>Feldkirchen in Kärnten</td>
+                    <td>M1123</td>
+                    <td>1232</td>
+                    <td>14/2/2022</td>
+                    <td>Momo</td>
+                    <td>$200</td>
                   </tr>
                   <tr>
                     <td>6</td>
-                    <td>Mason Porter</td>
-                    <td>$78,615</td>
-                    <td>Chile</td>
-                    <td>Gloucester</td>
+                    <td>M1123</td>
+                    <td>1232</td>
+                    <td>14/2/2022</td>
+                    <td>Momo</td>
+                    <td>$200</td>
                   </tr>
                   <tr>
                     <td>7</td>
-                    <td>Mike Chaney (Warning)</td>
-                    <td>$38,735</td>
-                    <td>Romania</td>
-                    <td>Bucharest</td>
+                    <td>M1123</td>
+                    <td>1232</td>
+                    <td>14/2/2022</td>
+                    <td>Momo</td>
+                    <td>$200</td>
                   </tr>
                 </tbody>
               </Table>
