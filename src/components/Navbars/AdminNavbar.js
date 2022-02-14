@@ -16,6 +16,7 @@ import {
   Row,
   Col,
   Collapse,
+  DropdownButton,
 } from "react-bootstrap";
 
 function AdminNavbar() {
@@ -45,9 +46,6 @@ function AdminNavbar() {
                 <i className="fas fa-bars visible-on-sidebar-mini"></i>
               </Button>
             </div>
-            <Navbar.Brand href="#pablo" onClick={(e) => e.preventDefault()}>
-              Buttons
-            </Navbar.Brand>
           </div>
           <button
             className="navbar-toggler navbar-toggler-right border-0"
@@ -153,10 +151,7 @@ function AdminNavbar() {
                 >
                   <i className="nc-icon nc-bullet-list-67"></i>
                 </Dropdown.Toggle>
-                <Dropdown.Menu
-                  alignRight
-                  aria-labelledby="navbarDropdownMenuLink"
-                >
+                <Dropdown.Menu aria-labelledby="navbarDropdownMenuLink">
                   <Dropdown.Item
                     href="#pablo"
                     onClick={(e) => e.preventDefault()}
