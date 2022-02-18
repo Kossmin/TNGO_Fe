@@ -16,8 +16,8 @@ import {
   Row,
   Col,
   Collapse,
-  DropdownButton,
 } from "react-bootstrap";
+import "../../views/Component.css";
 
 function AdminNavbar() {
   const [collapseOpen, setCollapseOpen] = React.useState(false);
@@ -46,6 +46,9 @@ function AdminNavbar() {
                 <i className="fas fa-bars visible-on-sidebar-mini"></i>
               </Button>
             </div>
+            <Navbar.Brand href="#pablo" onClick={(e) => e.preventDefault()}>
+              Buttons
+            </Navbar.Brand>
           </div>
           <button
             className="navbar-toggler navbar-toggler-right border-0"
@@ -143,7 +146,7 @@ function AdminNavbar() {
                   </Dropdown.Item>
                 </Dropdown.Menu>
               </Dropdown>
-              <Dropdown as={Nav.Item}>
+              <Dropdown as={Nav.Item} alignRight flip show>
                 <Dropdown.Toggle
                   as={Nav.Link}
                   id="dropdown-41471887333"
@@ -151,7 +154,11 @@ function AdminNavbar() {
                 >
                   <i className="nc-icon nc-bullet-list-67"></i>
                 </Dropdown.Toggle>
-                <Dropdown.Menu aria-labelledby="navbarDropdownMenuLink">
+                <Dropdown.Menu
+                  flip
+                  className="ml-auto"
+                  aria-labelledby="navbarDropdownMenuLink"
+                >
                   <Dropdown.Item
                     href="#pablo"
                     onClick={(e) => e.preventDefault()}

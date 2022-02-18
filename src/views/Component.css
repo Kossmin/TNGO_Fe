@@ -6,3 +6,20 @@
    display: flex;
    justify-content: flex-end;
 }
+
+.green{
+   background-color: green;
+}
+
+.yellow{
+   background-color: yellow;
+}
+
+.red{
+   background-color: red;
+}
+
+.test{
+   left: 73%;
+   position: absolute;
+}

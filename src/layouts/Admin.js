@@ -64,7 +64,7 @@ function Admin() {
           <div className="content">
             <Switch>{getRoutes(routes)}</Switch>
           </div>
-          <AdminFooter />
+          {/* <AdminFooter /> */}
           <div
             className="close-layer"
             onClick={() =>

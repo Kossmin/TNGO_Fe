@@ -68,6 +68,7 @@ const Bicycles = (props) => {
                   <tr>
                     <th>ID</th>
                     <th>Name</th>
+                    <th>Type</th>
                     <th>License plate</th>
                     <th>Station</th>
                     <th>Status</th>
@@ -78,6 +79,7 @@ const Bicycles = (props) => {
                   <tr className="success">
                     <td>1</td>
                     <td>Dakota Rice (Success)</td>
+                    <td>Bicycle</td>
                     <td>36738</td>
                     <td>Niger</td>
                     <td>Using</td>
@@ -128,6 +130,7 @@ const Bicycles = (props) => {
                   <tr>
                     <td>2</td>
                     <td>Minerva Hooper</td>
+                    <td>Bicycle</td>
                     <td>23789</td>
                     <td>Curaçao</td>
                     <td>Available</td>
@@ -178,6 +181,7 @@ const Bicycles = (props) => {
                   <tr className="info">
                     <td>3</td>
                     <td>Sage Rodriguez (Info)</td>
+                    <td>Bicycle</td>
                     <td>56142</td>
                     <td>Netherlands</td>
                     <td>Available</td>
@@ -228,6 +232,7 @@ const Bicycles = (props) => {
                   <tr>
                     <td>4</td>
                     <td>Philip Chaney</td>
+                    <td>Bicycle</td>
                     <td>38735</td>
                     <td>Korea, South</td>
                     <td>Available</td>
@@ -278,6 +283,7 @@ const Bicycles = (props) => {
                   <tr className="danger">
                     <td>5</td>
                     <td>Doris Greene (Danger)</td>
+                    <td>Bicycle</td>
                     <td>63542</td>
                     <td>Malawi</td>
                     <td>Available</td>
@@ -328,6 +334,7 @@ const Bicycles = (props) => {
                   <tr>
                     <td>6</td>
                     <td>Mason Porter</td>
+                    <td>Bicycle</td>
                     <td>78615</td>
                     <td>Chile</td>
                     <td>Available</td>
@@ -378,6 +385,7 @@ const Bicycles = (props) => {
                   <tr className="warning">
                     <td>7</td>
                     <td>Mike Chaney (Warning)</td>
+                    <td>Bicycle</td>
                     <td>38735</td>
                     <td>Romania</td>
                     <td>Available</td>
