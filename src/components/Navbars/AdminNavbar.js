@@ -146,7 +146,7 @@ function AdminNavbar() {
                   </Dropdown.Item>
                 </Dropdown.Menu>
               </Dropdown>
-              <Dropdown as={Nav.Item} alignRight flip show>
+              <Dropdown as={Nav.Item}>
                 <Dropdown.Toggle
                   as={Nav.Link}
                   id="dropdown-41471887333"
@@ -170,24 +170,10 @@ function AdminNavbar() {
                     href="#pablo"
                     onClick={(e) => e.preventDefault()}
                   >
-                    <i className="nc-icon nc-umbrella-13"></i>
-                    Help Center
-                  </Dropdown.Item>
-                  <Dropdown.Item
-                    href="#pablo"
-                    onClick={(e) => e.preventDefault()}
-                  >
                     <i className="nc-icon nc-settings-90"></i>
                     Settings
                   </Dropdown.Item>
                   <div className="divider"></div>
-                  <Dropdown.Item
-                    href="#pablo"
-                    onClick={(e) => e.preventDefault()}
-                  >
-                    <i className="nc-icon nc-lock-circle-open"></i>
-                    Lock Screen
-                  </Dropdown.Item>
                   <Dropdown.Item
                     className="text-danger"
                     href="#pablo"
