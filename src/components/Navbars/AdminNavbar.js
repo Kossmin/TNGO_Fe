@@ -64,48 +64,6 @@ function AdminNavbar() {
               <Dropdown as={Nav.Item}>
                 <Dropdown.Toggle
                   as={Nav.Link}
-                  id="dropdown-165516306"
-                  variant="default"
-                >
-                  <i className="nc-icon nc-planet"></i>
-                </Dropdown.Toggle>
-                <Dropdown.Menu>
-                  <Dropdown.Item
-                    href="#pablo"
-                    onClick={(e) => e.preventDefault()}
-                  >
-                    Create New Post
-                  </Dropdown.Item>
-                  <Dropdown.Item
-                    href="#pablo"
-                    onClick={(e) => e.preventDefault()}
-                  >
-                    Manage Something
-                  </Dropdown.Item>
-                  <Dropdown.Item
-                    href="#pablo"
-                    onClick={(e) => e.preventDefault()}
-                  >
-                    Do Nothing
-                  </Dropdown.Item>
-                  <Dropdown.Item
-                    href="#pablo"
-                    onClick={(e) => e.preventDefault()}
-                  >
-                    Submit to live
-                  </Dropdown.Item>
-                  <li className="divider"></li>
-                  <Dropdown.Item
-                    href="#pablo"
-                    onClick={(e) => e.preventDefault()}
-                  >
-                    Another action
-                  </Dropdown.Item>
-                </Dropdown.Menu>
-              </Dropdown>
-              <Dropdown as={Nav.Item}>
-                <Dropdown.Toggle
-                  as={Nav.Link}
                   id="dropdown-414718872"
                   variant="default"
                 >
@@ -155,7 +113,7 @@ function AdminNavbar() {
                   <i className="nc-icon nc-bullet-list-67"></i>
                 </Dropdown.Toggle>
                 <Dropdown.Menu
-                  flip
+                  alignRight
                   className="ml-auto"
                   aria-labelledby="navbarDropdownMenuLink"
                 >
