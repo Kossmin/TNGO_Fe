@@ -60,7 +60,7 @@ const BicycleTypes = (props) => {
                   </tr>
                 </thead>
                 <tbody>
-                  <tr className="yellow">
+                  <tr className="warning">
                     <td>1</td>
                     <td>Bicycle</td>
                     <td>Yellow</td>
@@ -110,7 +110,7 @@ const BicycleTypes = (props) => {
                       </Button>
                     </td>
                   </tr>
-                  <tr className="green">
+                  <tr className="success">
                     <td>2</td>
                     <td>Bicycle</td>
                     <td>Green</td>
@@ -160,7 +160,7 @@ const BicycleTypes = (props) => {
                       </Button>
                     </td>
                   </tr>
-                  <tr className="red">
+                  <tr className="danger">
                     <td>3</td>
                     <td>Hydrid bike</td>
                     <td>Red</td>
