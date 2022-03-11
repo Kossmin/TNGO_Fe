@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "527831224047",
+    "project_id": "tngo-1-342108",
+    "storage_bucket": "tngo-1-342108.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:527831224047:android:14a5b7827043430a38951a",
+        "android_client_info": {
+          "package_name": "com.example.tngo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "527831224047-gdf9t167095aclho03avseb671c94afc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAut1B9KF9Sks0kLFKDzYhYCAanZMDGZPk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "527831224047-gdf9t167095aclho03avseb671c94afc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
