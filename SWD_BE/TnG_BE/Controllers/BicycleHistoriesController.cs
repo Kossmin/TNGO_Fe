@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -14,6 +15,7 @@ namespace TnG_BE.Controllers
 {
     [Route("api/v1/bicycle-histories")]
     [ApiController]
+    [Authorize]
     public class BicycleHistoriesController : ControllerBase
     {
         private readonly TnGContext _context;
