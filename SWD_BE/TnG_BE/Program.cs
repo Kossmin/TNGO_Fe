@@ -53,6 +53,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["AppSetting:Secret"]))
     };
 });
+builder.Services.AddAuthorization();
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
@@ -85,17 +86,6 @@ builder.Services.AddSwaggerGen(c =>
     }
 });
 });
-/*builder.Services.AddAuthorization();
-builder.Services.AddAuthentication()
-      .AddGoogle(options =>//https://console.developers.google.com/apis/dashboard?project=api-project-46962694746&authuser=0&pli=1
-      {
-          IConfigurationSection googleAuthNSection =
-              builder.Configuration.GetSection("Authentication:Google2");
-
-          options.ClientId = googleAuthNSection["ClientId"]; ;
-          options.ClientSecret = googleAuthNSection["ClientSecret"];
-      });*/
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -118,9 +108,9 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseAuthorization();
-
 app.UseAuthentication();
+
+app.UseAuthorization();
 
 app.MapControllers();
 
