@@ -27,6 +27,7 @@ namespace TnG_BE.Controllers
         }
 
         // GET: api/v1/bicycle-histories
+        [AllowAnonymous]
         [HttpGet]
         public IEnumerable<BicycleHistory> GetBicycleHistories()
         {

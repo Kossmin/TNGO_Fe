@@ -31,6 +31,7 @@ namespace TnG_BE.Controllers
         }
 
         // GET: api/v1/bicycles
+        [AllowAnonymous]
         [HttpGet]
         public IEnumerable<Bicycle> GetBicycles()
         {
@@ -43,6 +44,7 @@ namespace TnG_BE.Controllers
         }
 
         // GET: api/v1/bicycles/5
+        [AllowAnonymous]
         [HttpGet(template: "get/{id}")]
         public Bicycle GetBicycle(int id)
         {

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using TnG_BE.Models;
 using TodoApi.IRepository;
 using TodoApi.Repository;
@@ -9,6 +10,7 @@ namespace TnG_BE.Controllers
     {
         [Route("api/v1/trip")]
         [ApiController]
+        [Authorize]
         public class TripsController : ControllerBase
         {
             private readonly TnGContext _context;
@@ -21,6 +23,7 @@ namespace TnG_BE.Controllers
             }
 
             // GET: api/Trips
+            [AllowAnonymous]
             [HttpGet]
             public IEnumerable<Trip> GetTrips()
             {
@@ -30,6 +33,7 @@ namespace TnG_BE.Controllers
 
             // GET: api/Trips/5
             [HttpGet(template: "get/{id}")]
+            [AllowAnonymous]
             public Trip GetTrip(int id)
             {
                 Trip s = tripRepo.GetTrip(id);

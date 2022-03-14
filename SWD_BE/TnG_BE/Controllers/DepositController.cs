@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using TnG_BE.Models;
 using TodoApi.IRepository;
 using TodoApi.Repository;
@@ -8,6 +9,7 @@ namespace TnG_BE.Controllers
     public class DepositController
     {
         [Route("api/v1/deposit")]
+        [Authorize]
         [ApiController]
         public class DepositsController : ControllerBase
         {

@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -14,6 +15,7 @@ namespace TnG_BE.Controllers
 {
     [Route("api/v1/station")]
     [ApiController]
+    [Authorize]
     public class StationsController : ControllerBase
     {
         private readonly TnGContext _context;
@@ -26,6 +28,7 @@ namespace TnG_BE.Controllers
         }
 
         // GET: api/Stations
+        [AllowAnonymous]
         [HttpGet]
         public IEnumerable<Station> GetStations()
         {
@@ -34,6 +37,7 @@ namespace TnG_BE.Controllers
         }
 
         // GET: api/Stations/5
+        [AllowAnonymous]
         [HttpGet(template: "get/{id}")]
         public Station GetStation(int id)
         {

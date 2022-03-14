@@ -42,6 +42,7 @@ namespace TnG_BE.Controllers
 
                     return "Create Success";
                 }*/
+
         [HttpGet(template: "login")]
         public async Task<IActionResult> LoginAsync(string token)
         {
@@ -54,14 +55,11 @@ namespace TnG_BE.Controllers
             {
                 return Ok(new { token = jwtToken });
             }
-
-
             return Unauthorized();
 
         }
 
         [HttpGet(template: "sendNotify")]
-
         public IActionResult SendNotify(string token)
         {
             if (token == null) return BadRequest();
@@ -96,8 +94,6 @@ namespace TnG_BE.Controllers
             Console.WriteLine("Successfully sent message: " + response);
             return Ok(); ;
         }
-
-
 
         private static bool AutheticatedUserAsync(string uid)
         {

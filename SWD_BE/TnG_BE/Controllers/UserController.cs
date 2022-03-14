@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using TnG_BE.Models;
 using TodoApi.IRepository;
 using TodoApi.Repository;
@@ -7,6 +8,7 @@ namespace TnG_BE.Controllers
 {
     [Route("api/v1/user")]
     [ApiController]
+    [Authorize]
     public class UsersController : ControllerBase
     {
         private readonly TnGContext _context;
