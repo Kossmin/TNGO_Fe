@@ -166,7 +166,7 @@ class HomeWalletScreen extends StatelessWidget {
                                 ),
                                 padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                               ),
-                              const SizedBox(width: 16,),
+                              const SizedBox(width: 14,),
                               Container(
                                 child: Row(
                                   children: <Widget>[
@@ -198,7 +198,7 @@ class HomeWalletScreen extends StatelessWidget {
                                     SizedBox(
                                       width: 8,
                                     ),
-                                    Text("Expenses", style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: Colors.grey[900]),),
+                                    Text("Expenses", style: TextStyle(fontSize: 10, fontWeight: FontWeight.w700, color: Colors.grey[900]),),
                                   ],
                                 ),
                                 decoration: const BoxDecoration(
