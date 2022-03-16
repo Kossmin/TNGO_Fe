@@ -22,10 +22,16 @@ namespace TnG_BE.Controllers
 
         // GET: api/Users
         [HttpGet]
-        public IEnumerable<User> GetUsers()
+        public IEnumerable<User> GetUsers(int page, string name)
         {
-            IEnumerable<User> ss = userRepo.GetUsers();
-            return ss;
+            if (name == null) name = "";
+            IEnumerable<User> ss = userRepo.GetUsers().Skip(page * 10).Take(10)
+                .Where(s => s.Name.Contains(name, StringComparison.OrdinalIgnoreCase));
+            if(ss.Any())
+            {
+                return ss;
+            }
+            return null;
         }
 
         // GET: api/Users/5

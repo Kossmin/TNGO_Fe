@@ -33,9 +33,13 @@ namespace TnG_BE.Controllers
         // GET: api/v1/bicycles
         [AllowAnonymous]
         [HttpGet]
-        public IEnumerable<Bicycle> GetBicycles()
+        public IEnumerable<Bicycle> GetBicycles(int page)
         {
-            IEnumerable<Bicycle> bs = bicycleRepo.GetBicycles();
+            IEnumerable<Bicycle> bs = bicycleRepo.GetBicycles().Skip(page * 10).Take(10);
+            if(bs == null)
+            {
+                return null;
+            }
             foreach (Bicycle b in bs)
             {
                 b.Station = stationRepo.GetStation(b.StationId);

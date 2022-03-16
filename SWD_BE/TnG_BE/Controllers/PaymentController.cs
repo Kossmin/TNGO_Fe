@@ -24,10 +24,14 @@ namespace TnG_BE.Controllers
 
             // GET: api/Payments
             [HttpGet]
-            public IEnumerable<Payment> GetPayments()
+            public IEnumerable<Payment> GetPayments(int page)
             {
-                IEnumerable<Payment> ss = paymentRepo.GetPayments();
-                return ss;
+                IEnumerable<Payment> ss = paymentRepo.GetPayments().Skip(page * 10).Take(10);
+                if(ss.Any())
+                {
+                    return ss;
+                }
+                return null;
             }
 
             // GET: api/Payments/5

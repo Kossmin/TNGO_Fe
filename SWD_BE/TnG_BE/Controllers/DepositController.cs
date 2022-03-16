@@ -24,10 +24,14 @@ namespace TnG_BE.Controllers
 
             // GET: api/Deposits
             [HttpGet]
-            public IEnumerable<Deposit> GetDeposits()
+            public IEnumerable<Deposit> GetDeposits(int page)
             {
-                IEnumerable<Deposit> ss = depositRepo.GetDeposits();
-                return ss;
+                IEnumerable<Deposit> ss = depositRepo.GetDeposits().Skip(page * 10).Take(10);
+                if(ss.Any())
+                {
+                    return ss;
+                }
+                return null;
             }
 
             // GET: api/Deposits/5

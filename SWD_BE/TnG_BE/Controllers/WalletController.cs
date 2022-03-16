@@ -24,10 +24,14 @@ namespace TnG_BE.Controllers
 
             // GET: api/Wallets
             [HttpGet]
-            public IEnumerable<Wallet> GetWallets()
+            public IEnumerable<Wallet> GetWallets(int page)
             {
-                IEnumerable<Wallet> ss = walletRepo.GetWallets();
-                return ss;
+                IEnumerable<Wallet> ss = walletRepo.GetWallets().Skip(page * 10).Take(10);
+                if (ss.Any())
+                {
+                    return ss;
+                }
+                return null;
             }
 
             // GET: api/Wallets/5

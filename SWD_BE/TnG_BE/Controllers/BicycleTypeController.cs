@@ -23,9 +23,13 @@ namespace TnG_BE.Controllers
         // GET: api/BicycleTypes
         [AllowAnonymous]
         [HttpGet]
-        public IEnumerable<BicycleType> GetBicycleTypes()
+        public IEnumerable<BicycleType> GetBicycleTypes(int page)
         {
-            IEnumerable<BicycleType> ss = bTypeRepo.GetBicycleTypes();
+            IEnumerable<BicycleType> ss = bTypeRepo.GetBicycleTypes().Skip(page * 10).Take(10);
+            if(ss == null)
+            {
+                return null;
+            }
             return ss;
         }
 

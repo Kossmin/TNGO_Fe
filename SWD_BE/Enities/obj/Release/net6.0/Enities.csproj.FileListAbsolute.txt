@@ -1,0 +1,14 @@
+D:\Courses Slides\SWD391\SWD_FE\TNGO_Fe\SWD_BE\Enities\bin\Release\net6.0\Enities.deps.json
+D:\Courses Slides\SWD391\SWD_FE\TNGO_Fe\SWD_BE\Enities\bin\Release\net6.0\Enities.runtimeconfig.json
+D:\Courses Slides\SWD391\SWD_FE\TNGO_Fe\SWD_BE\Enities\bin\Release\net6.0\Enities.dll
+D:\Courses Slides\SWD391\SWD_FE\TNGO_Fe\SWD_BE\Enities\bin\Release\net6.0\Enities.pdb
+D:\Courses Slides\SWD391\SWD_FE\TNGO_Fe\SWD_BE\Enities\obj\Release\net6.0\Enities.csproj.AssemblyReference.cache
+D:\Courses Slides\SWD391\SWD_FE\TNGO_Fe\SWD_BE\Enities\obj\Release\net6.0\Enities.GeneratedMSBuildEditorConfig.editorconfig
+D:\Courses Slides\SWD391\SWD_FE\TNGO_Fe\SWD_BE\Enities\obj\Release\net6.0\Enities.AssemblyInfoInputs.cache
+D:\Courses Slides\SWD391\SWD_FE\TNGO_Fe\SWD_BE\Enities\obj\Release\net6.0\Enities.AssemblyInfo.cs
+D:\Courses Slides\SWD391\SWD_FE\TNGO_Fe\SWD_BE\Enities\obj\Release\net6.0\Enities.csproj.CoreCompileInputs.cache
+D:\Courses Slides\SWD391\SWD_FE\TNGO_Fe\SWD_BE\Enities\obj\Release\net6.0\Enities.dll
+D:\Courses Slides\SWD391\SWD_FE\TNGO_Fe\SWD_BE\Enities\obj\Release\net6.0\refint\Enities.dll
+D:\Courses Slides\SWD391\SWD_FE\TNGO_Fe\SWD_BE\Enities\obj\Release\net6.0\Enities.pdb
+D:\Courses Slides\SWD391\SWD_FE\TNGO_Fe\SWD_BE\Enities\obj\Release\net6.0\Enities.genruntimeconfig.cache
+D:\Courses Slides\SWD391\SWD_FE\TNGO_Fe\SWD_BE\Enities\obj\Release\net6.0\ref\Enities.dll

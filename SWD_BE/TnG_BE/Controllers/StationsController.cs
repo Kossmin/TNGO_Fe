@@ -30,10 +30,14 @@ namespace TnG_BE.Controllers
         // GET: api/Stations
         [AllowAnonymous]
         [HttpGet]
-        public IEnumerable<Station> GetStations()
+        public IEnumerable<Station> GetStations(int page)
         {
-            IEnumerable<Station> ss = stationRepo.GetStations();
-            return ss;
+            IEnumerable<Station> ss = stationRepo.GetStations().Skip(page * 10).Take(10);
+            if(ss.Any())
+            {
+                return ss;
+            }
+            return null;
         }
 
         // GET: api/Stations/5

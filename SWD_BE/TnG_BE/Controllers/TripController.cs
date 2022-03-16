@@ -25,10 +25,14 @@ namespace TnG_BE.Controllers
             // GET: api/Trips
             [AllowAnonymous]
             [HttpGet]
-            public IEnumerable<Trip> GetTrips()
+            public IEnumerable<Trip> GetTrips(int page)
             {
-                IEnumerable<Trip> ss = tripRepo.GetTrips();
-                return ss;
+                IEnumerable<Trip> ss = tripRepo.GetTrips().Skip(page * 10).Take(10);
+                if(ss.Any())
+                {
+                    return ss;
+                }
+                return null;
             }
 
             // GET: api/Trips/5

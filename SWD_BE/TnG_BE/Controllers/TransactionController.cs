@@ -22,10 +22,14 @@ namespace TnG_BE.Controllers
 
         // GET: api/Transactions
         [HttpGet]
-        public IEnumerable<Transaction> GetTransactions()
+        public IEnumerable<Transaction> GetTransactions(int page)
         {
-            IEnumerable<Transaction> ss = transRepo.GetTransactions();
-            return ss;
+            IEnumerable<Transaction> ss = transRepo.GetTransactions().Skip(page * 10).Take(10);
+            if(ss.Any())
+            {
+                return ss;
+            }
+            return null;
         }
 
         // GET: api/Transactions/5
