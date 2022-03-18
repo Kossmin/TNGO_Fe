@@ -20,9 +20,11 @@ namespace TnG_BE.Controllers
     {
         private readonly TnGContext _context;
         private IBicycleHistoryRepository bHisRepo;
+        private IBicycleRepository bRepo;
         public BicycleHistoriesController(TnGContext context)
         {
             this.bHisRepo = new BicycleHistoryRepository(context);
+            this.bRepo = new BicycleRepository(context);
             _context = context;
         }
 
@@ -35,6 +37,10 @@ namespace TnG_BE.Controllers
             if(bicycleHistories == null)
             {
                 return null;
+            }
+            foreach (BicycleHistory bH in bicycleHistories)
+            {
+                bH.Bicycle = bRepo.GetBicycle(bH.BicycleId);
             }
             return bicycleHistories;
         }

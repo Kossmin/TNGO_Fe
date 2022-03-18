@@ -32,8 +32,8 @@ namespace TnG_BE.Models
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("Server=EC2AMAZ-O0FAPOF;Database=TnG;Trusted_Connection=True;");
                 //optionsBuilder.UseSqlServer("Server=se141050\\hant;Database=TnG;Trusted_Connection=True;");
+                optionsBuilder.UseSqlServer("Server=EC2AMAZ-O0FAPOF;Database=TnG;Trusted_Connection=True;");
             }
         }
 
@@ -219,15 +219,19 @@ namespace TnG_BE.Models
                     .HasMaxLength(50)
                     .IsUnicode(false);
 
+                entity.Property(e => e.FireBaseUid)
+                    .HasMaxLength(2000)
+                    .HasColumnName("FireBaseUID");
+
                 entity.Property(e => e.Name).HasMaxLength(50);
 
-                entity.Property(e => e.Password)
-                    .HasMaxLength(10)
-                    .IsFixedLength();
+                entity.Property(e => e.Password).HasMaxLength(50);
 
                 entity.Property(e => e.Phone)
                     .HasMaxLength(10)
                     .IsFixedLength();
+
+                entity.Property(e => e.Token).HasMaxLength(2000);
 
                 entity.HasOne(d => d.Trip)
                     .WithMany(p => p.Users)
