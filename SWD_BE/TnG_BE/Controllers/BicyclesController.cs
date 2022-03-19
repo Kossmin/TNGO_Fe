@@ -4,10 +4,12 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
+using Enities.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using TnG_BE.Models;
 using TodoApi.IRepository;
 using TodoApi.Repository;
@@ -16,35 +18,37 @@ namespace TnG_BE.Controllers
 {
     [Route("api/v1/bicycle")]
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class BicyclesController : ControllerBase
     {
         private readonly TnGContext _context;
         private IBicycleRepository bicycleRepo;
         private IStationRepository stationRepo;
-
+        private IBicycleTypeRepository bicycleTypeRepo;
         public BicyclesController(TnGContext context)
         {
             this.bicycleRepo = new BicycleRepository(context);
             this.stationRepo = new StationRepository(context);  
+            this.bicycleTypeRepo = new BicycleTypeRepository(context);
             _context = context;
         }
 
         // GET: api/v1/bicycles
         [AllowAnonymous]
         [HttpGet]
-        public IEnumerable<Bicycle> GetBicycles(int page)
+        public ActionResult GetBicycles(int page)
         {
-            IEnumerable<Bicycle> bs = bicycleRepo.GetBicycles().Skip(page * 10).Take(10);
+            IEnumerable<Bicycle> bs = bicycleRepo.GetBicycles().AsQueryable()
+                .Join(stationRepo.GetStations(), x => x.StationId, y => y.Id, (x,y) => new Bicycle(x,y))
+                .Join(bicycleTypeRepo.GetBicycleTypes(), x => x.TypeId, y => y.Id, (x, y) => new Bicycle(x, y))
+                .Skip(page * 10).Take(10);
             if(bs == null)
             {
                 return null;
             }
-            foreach (Bicycle b in bs)
-            {
-                b.Station = stationRepo.GetStation(b.StationId);
-            }
-            return bs;
+            var json = JsonConvert.SerializeObject(bs, Formatting.Indented, new JsonSerializerSettings { PreserveReferencesHandling = PreserveReferencesHandling.None });
+
+            return Content(json, "application/json");
         }
 
         // GET: api/v1/bicycles/5
@@ -59,18 +63,62 @@ namespace TnG_BE.Controllers
             }
 
             b.Station = stationRepo.GetStation(b.StationId);
-
+            b.Type = bicycleTypeRepo.GetBicycleType(b.TypeId);
             return b;
+        }
+
+        [AllowAnonymous]
+        [HttpGet(template: "search-type")]
+        public ActionResult SearchBicycleByType(int type, int page)
+        {
+            if (type == null) return BadRequest();
+            IEnumerable<Bicycle> bs = bicycleRepo.GetBicycles()
+                    .Where(b => b.TypeId == type)
+                    .AsQueryable()
+                    .Join(stationRepo.GetStations(), x => x.StationId, y => y.Id, (x, y) => new Bicycle(x, y))
+                    .Join(bicycleTypeRepo.GetBicycleTypes(), x => x.TypeId, y => y.Id, (x, y) => new Bicycle(x, y))
+                    .Skip(page * 10).Take(10);
+
+            var json = JsonConvert.SerializeObject(bs, Formatting.Indented, new JsonSerializerSettings { PreserveReferencesHandling = PreserveReferencesHandling.None });
+
+            return Content(json, "application/json");
+        }
+
+        [AllowAnonymous]
+        [HttpGet(template: "search-plate")]
+        public ActionResult SearchBicycleByPlate(string plate, int page)
+        {
+            if (plate == null) plate = "";
+            IEnumerable<Bicycle> bs = bicycleRepo.GetBicycles()
+                    .Where(b => b.LicensePlate.Contains(plate))
+                    .AsQueryable()
+                    .Join(stationRepo.GetStations(), x => x.StationId, y => y.Id, (x, y) => new Bicycle(x, y))
+                    .Join(bicycleTypeRepo.GetBicycleTypes(), x => x.TypeId, y => y.Id, (x, y) => new Bicycle(x, y))
+                    .Skip(page * 10).Take(10);
+
+            var json = JsonConvert.SerializeObject(bs, Formatting.Indented, new JsonSerializerSettings { PreserveReferencesHandling = PreserveReferencesHandling.None });
+
+            return Content(json, "application/json");
         }
 
         // PUT: api/v1/bicycles/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut(template: "update")]
-        public String PutBicycle(Bicycle bicycle)
+        public String PutBicycle([FromBody] BicycleViewModel bViewModel, int id)
         {
             try
             {
-                bicycleRepo.UpdateBicycle(bicycle);
+                Bicycle b = new Bicycle
+                {
+                    Id = id,
+                    Status = bViewModel.Status,
+                    Description = bViewModel.Description,
+                    StationId = bViewModel.StationId,
+                    LicensePlate = bViewModel.LicensePlate,
+                    Image = bViewModel.Image,
+                    TypeId = bViewModel.TypeId,
+                };
+                bicycleRepo.UpdateBicycle(b);
             }
             catch (DataException)
             {
@@ -111,9 +159,28 @@ namespace TnG_BE.Controllers
         // POST: api/v1/bicycles
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public String PostBicycle(Bicycle bicycle)
+        public String PostBicycle([FromBody] BicycleViewModel bViewModel)
         {
-            bicycleRepo.InsertBicycle(bicycle);
+            int id = bicycleRepo.GetBicycles().OrderBy(x => x.Id).Last().Id + 1;
+            try
+            {
+                Bicycle b = new Bicycle
+                {
+                    Id = id,
+                    Status = bViewModel.Status,
+                    Description = bViewModel.Description,
+                    StationId = bViewModel.StationId,
+                    LicensePlate = bViewModel.LicensePlate,
+                    Image = bViewModel.Image,
+                    TypeId = bViewModel.TypeId,
+                };
+
+                bicycleRepo.InsertBicycle(b);
+            }
+            catch (Exception)
+            {
+                return "Add Failed";
+            }
 
             return "Add Success";
         }

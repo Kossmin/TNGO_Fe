@@ -11,7 +11,7 @@ using System.Text;
 
 namespace TnG_BE.Controllers
 {
-    [Route("api/v1/authentication")]
+    [Route("api/v1/auth")]
     [ApiController]
     public class AuthenticationController : Controller
     {

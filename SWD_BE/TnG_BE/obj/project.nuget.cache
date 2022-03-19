@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "19cQ7fKCFFfE8uCcfHrvRug9vrYWZrWxgKuHagwRbMkFjt9WbVmLPJlxC1dHWH5PK6d4iSbai4xLg6/r+1aRQw==",
+  "dgSpecHash": "R2ZdxNEJdWv1pExE95iEbrskM4RMr9kyV1RLMp06pc4KRhFqJmoBj5p8RbwuqACU2OeSogSCcJ9k65cET+ZsLw==",
   "success": true,
   "projectFilePath": "D:\\Courses Slides\\SWD391\\SWD_FE\\TNGO_Fe\\SWD_BE\\TnG_BE\\TnG_BE.csproj",
   "expectedPackageFiles": [
@@ -17,7 +17,8 @@
     "C:\\Users\\redra\\.nuget\\packages\\messagepack\\2.1.152\\messagepack.2.1.152.nupkg.sha512",
     "C:\\Users\\redra\\.nuget\\packages\\messagepack.annotations\\2.1.152\\messagepack.annotations.2.1.152.nupkg.sha512",
     "C:\\Users\\redra\\.nuget\\packages\\messagepackanalyzer\\2.1.152\\messagepackanalyzer.2.1.152.nupkg.sha512",
-    "C:\\Users\\redra\\.nuget\\packages\\microsoft.aspnet.webapi.client\\5.2.5\\microsoft.aspnet.webapi.client.5.2.5.nupkg.sha512",
+    "C:\\Users\\redra\\.nuget\\packages\\microsoft.aspnet.webapi.client\\5.2.7\\microsoft.aspnet.webapi.client.5.2.7.nupkg.sha512",
+    "C:\\Users\\redra\\.nuget\\packages\\microsoft.aspnet.webapi.core\\5.2.7\\microsoft.aspnet.webapi.core.5.2.7.nupkg.sha512",
     "C:\\Users\\redra\\.nuget\\packages\\microsoft.aspnetcore.authentication\\2.0.4\\microsoft.aspnetcore.authentication.2.0.4.nupkg.sha512",
     "C:\\Users\\redra\\.nuget\\packages\\microsoft.aspnetcore.authentication.abstractions\\2.0.3\\microsoft.aspnetcore.authentication.abstractions.2.0.3.nupkg.sha512",
     "C:\\Users\\redra\\.nuget\\packages\\microsoft.aspnetcore.authentication.core\\2.0.3\\microsoft.aspnetcore.authentication.core.2.0.3.nupkg.sha512",
@@ -227,5 +228,16 @@
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder\\system.xml.readerwriter\\4.3.0\\system.xml.readerwriter.4.3.0.nupkg.sha512",
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder\\system.xml.xdocument\\4.3.0\\system.xml.xdocument.4.3.0.nupkg.sha512"
   ],
-  "logs": []
+  "logs": [
+    {
+      "code": "NU1701",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Package 'Microsoft.AspNet.WebApi.Core 5.2.7' was restored using '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8' instead of the project target framework 'net6.0'. This package may not be fully compatible with your project.",
+      "libraryId": "Microsoft.AspNet.WebApi.Core",
+      "targetGraphs": [
+        "net6.0"
+      ]
+    }
+  ]
 }

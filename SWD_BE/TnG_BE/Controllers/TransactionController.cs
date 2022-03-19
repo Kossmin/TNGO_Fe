@@ -13,7 +13,6 @@ namespace TnG_BE.Controllers
     {
         private readonly TnGContext _context;
         private ITransactionRepository transRepo;
-
         public TransactionsController(TnGContext context)
         {
             this.transRepo = new TransactionRepository(context);
@@ -44,54 +43,35 @@ namespace TnG_BE.Controllers
             return s;
         }
 
-        // PUT: api/Transactions/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut(template: "update")]
-        public String PutTransaction(Transaction Transaction)
+        [HttpGet(template: "get-user-transaction")]
+        public IEnumerable<Transaction> GetUserTransaction(int page, int walletId)
         {
-            try
+            IEnumerable<Transaction> ss = transRepo.GetTransactions()
+                .Where(t => t.WalletId == walletId);
+            if (ss.Any())
             {
-                transRepo.UpdateTransaction(Transaction);
+                return ss;
             }
-            catch (Exception)
-            {
-                return "Update Failed";
-            }
-            return "Update Success";
+            return null;
         }
-
-        // POST: api/Transactions
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public String PostTransaction(Transaction Transaction)
+        
+        [HttpDelete(template: "delete-transaction-history")]
+        public string DeleteTransactionHistory (int walletId)
         {
             try
             {
-                transRepo.InsertTransaction(Transaction);
-            }
-            catch (Exception)
-            {
-                return "Add Failed";
-            }
-            return "Add Success";
-        }
-
-        // DELETE: api/Transactions/5
-        [HttpDelete("{id}")]
-        public String DeleteTransaction(int id)
-        {
-            try
-            {
-                if (TransactionExists(id))
+                IEnumerable<Transaction> ts = transRepo.GetTransactions()
+                    .Where(t => t.WalletId == walletId);
+                foreach (Transaction t in ts)
                 {
-                    transRepo.DeleteTransaction(id);
+                    transRepo.DeleteTransaction(t.Id);
                 }
             }
             catch (Exception)
             {
                 return "Delete Failed";
             }
-            return "Delete Success";
+            return "Delete History Success";
         }
 
         private bool TransactionExists(int id)

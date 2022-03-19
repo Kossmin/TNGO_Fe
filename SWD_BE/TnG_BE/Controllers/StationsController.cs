@@ -30,9 +30,11 @@ namespace TnG_BE.Controllers
         // GET: api/Stations
         [AllowAnonymous]
         [HttpGet]
-        public IEnumerable<Station> GetStations(int page)
+        public IEnumerable<Station> GetStations(int page, string district)
         {
-            IEnumerable<Station> ss = stationRepo.GetStations().Skip(page * 10).Take(10);
+            if (district == null) district = "";
+            IEnumerable<Station> ss = stationRepo.GetStations().Skip(page * 10).Take(10)
+                .Where(s => s.Location.Contains(district));
             if(ss.Any())
             {
                 return ss;

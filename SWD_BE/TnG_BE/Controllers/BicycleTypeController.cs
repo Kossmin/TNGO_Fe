@@ -67,8 +67,10 @@ namespace TnG_BE.Controllers
         [HttpPost]
         public String PostBicycleType(BicycleType BicycleType)
         {
+            int id = bTypeRepo.GetBicycleTypes().OrderBy(x => x.Id).Last().Id + 1;
             try
             {
+                BicycleType.Id = id;
                 bTypeRepo.InsertBicycleType(BicycleType);
             }
             catch (Exception)

@@ -38,10 +38,6 @@ namespace TnG_BE.Controllers
             {
                 return null;
             }
-            foreach (BicycleHistory bH in bicycleHistories)
-            {
-                bH.Bicycle = bRepo.GetBicycle(bH.BicycleId);
-            }
             return bicycleHistories;
         }
 
@@ -57,20 +53,13 @@ namespace TnG_BE.Controllers
             return bh;
         }
 
-        // PUT: api/v1/bicycle-histories/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public bool PutBicycleHistory(int id, BicycleHistory bicycleHistory)
-        {
-            bHisRepo.InsertBicycleHistory(bicycleHistory);
-            return true;
-        }
-
         // POST: api/v1/bicycle-histories
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public String PostBicycleHistory(BicycleHistory bicycleHistory)
         {
+            int id = bHisRepo.GetBicycleHistories().OrderBy(x => x.Id).Last().Id + 1;
+            bicycleHistory.Id = id;
             bHisRepo.InsertBicycleHistory(bicycleHistory);
             return "Add Success";
         }

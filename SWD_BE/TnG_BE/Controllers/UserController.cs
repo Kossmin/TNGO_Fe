@@ -13,10 +13,11 @@ namespace TnG_BE.Controllers
     {
         private readonly TnGContext _context;
         private IUserRepository userRepo;
-
+        private IWalletRepository walletRepo;
         public UsersController(TnGContext context)
         {
             this.userRepo = new UserRepository(context);
+            this.walletRepo = new WalletRepository(context);
             _context = context;
         }
 
@@ -70,11 +71,21 @@ namespace TnG_BE.Controllers
         // POST: api/Users
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public String PostUser(User User)
+        public String PostUser(User user)
         {
+            int id = userRepo.GetUsers().OrderBy(u => u.Id).Last().Id + 1;
+            user.Id = id;
             try
             {
-                userRepo.InsertUser(User);
+                userRepo.InsertUser(user);
+                //Add new Wallet for new user
+                Wallet wallet = new Wallet();
+                wallet.Id = walletRepo.GetWallets().OrderBy(w => w.Id).Last().Id + 1;
+                wallet.Money = 0;
+                wallet.Description = "";
+                wallet.UserId = id;
+                //End of Add new wallet
+                walletRepo.InsertWallet(wallet);
             }
             catch (Exception)
             {

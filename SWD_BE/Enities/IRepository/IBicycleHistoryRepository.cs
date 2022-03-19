@@ -7,7 +7,7 @@ namespace TodoApi.IRepository
         IEnumerable<BicycleHistory> GetBicycleHistories();
         BicycleHistory GetBicycleHistory(int id);
         void InsertBicycleHistory(BicycleHistory bicycleHistory);
-        bool UpdateCategory(BicycleHistory bicycleHistory);
+        bool UpdateBicycleHistory(BicycleHistory bicycleHistory);
         bool DeleteBicycleHistory(int id);
     }
 }

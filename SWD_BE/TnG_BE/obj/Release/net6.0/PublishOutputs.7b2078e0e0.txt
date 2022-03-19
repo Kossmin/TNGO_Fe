@@ -20,6 +20,7 @@ D:\Courses Slides\SWD391\SWD_FE\TNGO_Fe\SWD_BE\TnG_BE\obj\Release\net6.0\PubTmp\
 D:\Courses Slides\SWD391\SWD_FE\TNGO_Fe\SWD_BE\TnG_BE\obj\Release\net6.0\PubTmp\Out\MessagePack.dll
 D:\Courses Slides\SWD391\SWD_FE\TNGO_Fe\SWD_BE\TnG_BE\obj\Release\net6.0\PubTmp\Out\MessagePack.Annotations.dll
 D:\Courses Slides\SWD391\SWD_FE\TNGO_Fe\SWD_BE\TnG_BE\obj\Release\net6.0\PubTmp\Out\System.Net.Http.Formatting.dll
+D:\Courses Slides\SWD391\SWD_FE\TNGO_Fe\SWD_BE\TnG_BE\obj\Release\net6.0\PubTmp\Out\System.Web.Http.dll
 D:\Courses Slides\SWD391\SWD_FE\TNGO_Fe\SWD_BE\TnG_BE\obj\Release\net6.0\PubTmp\Out\Microsoft.AspNetCore.Authentication.Google.dll
 D:\Courses Slides\SWD391\SWD_FE\TNGO_Fe\SWD_BE\TnG_BE\obj\Release\net6.0\PubTmp\Out\Microsoft.AspNetCore.Authentication.JwtBearer.dll
 D:\Courses Slides\SWD391\SWD_FE\TNGO_Fe\SWD_BE\TnG_BE\obj\Release\net6.0\PubTmp\Out\Microsoft.AspNetCore.Razor.Language.dll

@@ -35,7 +35,7 @@ namespace TodoApi.Repository
             _context.SaveChanges();
         }
 
-        public bool UpdateCategory(BicycleHistory bicycleHistory)
+        public bool UpdateBicycleHistory(BicycleHistory bicycleHistory)
         {
             _context.BicycleHistories.Update(bicycleHistory);
             int rows = _context.SaveChanges();

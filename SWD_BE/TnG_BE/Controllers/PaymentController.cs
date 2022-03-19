@@ -15,10 +15,13 @@ namespace TnG_BE.Controllers
         {
             private readonly TnGContext _context;
             private IPaymentRepository paymentRepo;
-
+            private ITransactionRepository transactionRepo;
+            private IWalletRepository walletRepo;
             public PaymentsController(TnGContext context)
             {
                 this.paymentRepo = new PaymentRepository(context);
+                this.transactionRepo = new TransactionRepository(context);
+                this.walletRepo = new WalletRepository(context);
                 _context = context;
             }
 

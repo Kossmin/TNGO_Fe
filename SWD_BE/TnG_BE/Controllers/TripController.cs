@@ -6,8 +6,6 @@ using TodoApi.Repository;
 
 namespace TnG_BE.Controllers
 {
-    public class TripController
-    {
         [Route("api/v1/trip")]
         [ApiController]
         [Authorize]
@@ -69,8 +67,10 @@ namespace TnG_BE.Controllers
             [HttpPost]
             public String PostTrip(Trip Trip)
             {
+                int id = tripRepo.GetTrips().OrderBy(x => x.Id).Last().Id + 1;
                 try
                 {
+                    Trip.Id = id;
                     tripRepo.InsertTrip(Trip);
                 }
                 catch (Exception)
@@ -103,5 +103,4 @@ namespace TnG_BE.Controllers
                 return _context.Trips.Any(e => e.Id == id);
             }
         }
-    }
 }

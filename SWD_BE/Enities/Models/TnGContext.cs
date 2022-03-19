@@ -32,8 +32,8 @@ namespace TnG_BE.Models
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                //optionsBuilder.UseSqlServer("Server=se141050\\hant;Database=TnG;Trusted_Connection=True;");
-                optionsBuilder.UseSqlServer("Server=EC2AMAZ-O0FAPOF;Database=TnG;Trusted_Connection=True;");
+                optionsBuilder.UseSqlServer("Server=se141050\\hant;Database=TnG;Trusted_Connection=True;");
+                //optionsBuilder.UseSqlServer("Server=EC2AMAZ-O0FAPOF;Database=TnG;Trusted_Connection=True;");
             }
         }
 
@@ -60,6 +60,11 @@ namespace TnG_BE.Models
                     .HasForeignKey(d => d.StationId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_tblBicycle_tblStation");
+
+                entity.HasOne(d => d.Type)
+                    .WithMany(p => p.Bicycles)
+                    .HasForeignKey(d => d.TypeId)
+                    .HasConstraintName("FK__Bicycle__TypeId__5FB337D6");
             });
 
             modelBuilder.Entity<BicycleHistory>(entity =>
@@ -81,19 +86,11 @@ namespace TnG_BE.Models
 
             modelBuilder.Entity<BicycleType>(entity =>
             {
-                entity.HasNoKey();
-
                 entity.ToTable("BicycleType");
 
-                entity.Property(e => e.DateAdded).HasColumnType("date");
+                entity.Property(e => e.Id).ValueGeneratedNever();
 
                 entity.Property(e => e.Type).HasMaxLength(50);
-
-                entity.HasOne(d => d.Bicycle)
-                    .WithMany()
-                    .HasForeignKey(d => d.BicycleId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_BicycleType_Bicycle");
             });
 
             modelBuilder.Entity<Deposit>(entity =>
@@ -148,9 +145,7 @@ namespace TnG_BE.Models
 
                 entity.Property(e => e.Id).ValueGeneratedNever();
 
-                entity.Property(e => e.Location)
-                    .HasMaxLength(10)
-                    .IsFixedLength();
+                entity.Property(e => e.Location).HasMaxLength(200);
             });
 
             modelBuilder.Entity<Transaction>(entity =>
