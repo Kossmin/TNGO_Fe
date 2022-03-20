@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using TnG_BE.Models;
 using TodoApi.IRepository;
 using TodoApi.Repository;
@@ -23,43 +24,31 @@ namespace TnG_BE.Controllers
         // GET: api/BicycleTypes
         [AllowAnonymous]
         [HttpGet]
-        public IEnumerable<BicycleType> GetBicycleTypes(int page)
+        public ActionResult GetBicycleTypes(int page)
         {
             IEnumerable<BicycleType> ss = bTypeRepo.GetBicycleTypes().Skip(page * 10).Take(10);
-            if(ss == null)
+            if (ss == null)
             {
-                return null;
+                return BadRequest();
             }
-            return ss;
+            var json = JsonConvert.SerializeObject(ss, Formatting.Indented, new JsonSerializerSettings { PreserveReferencesHandling = PreserveReferencesHandling.None });
+
+            return Content(json, "application/json");
         }
 
         // GET: api/BicycleTypes/5
         [AllowAnonymous]
         [HttpGet(template: "get/{id}")]
-        public BicycleType GetBicycleType(int id)
+        public ActionResult GetBicycleType(int id)
         {
             BicycleType s = bTypeRepo.GetBicycleType(id);
             if (s == null)
             {
-                return null;
+                return BadRequest();
             }
-            return s;
-        }
+            var json = JsonConvert.SerializeObject(s, Formatting.Indented, new JsonSerializerSettings { PreserveReferencesHandling = PreserveReferencesHandling.None });
 
-        // PUT: api/BicycleTypes/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut(template: "update")]
-        public String PutBicycleType(BicycleType BicycleType)
-        {
-            try
-            {
-                bTypeRepo.UpdateBicycleType(BicycleType);
-            }
-            catch (Exception)
-            {
-                return "Update Failed";
-            }
-            return "Update Success";
+            return Content(json, "application/json");
         }
 
         // POST: api/BicycleTypes

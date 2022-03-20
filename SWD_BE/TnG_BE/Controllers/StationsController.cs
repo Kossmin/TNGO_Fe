@@ -1,12 +1,8 @@
 ﻿#nullable disable
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Enities.ViewModels;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using TnG_BE.Models;
 using TodoApi.IRepository;
 using TodoApi.Repository;
@@ -30,39 +26,50 @@ namespace TnG_BE.Controllers
         // GET: api/Stations
         [AllowAnonymous]
         [HttpGet]
-        public IEnumerable<Station> GetStations(int page, string district)
+        public ActionResult GetStations(int page, string district)
         {
             if (district == null) district = "";
             IEnumerable<Station> ss = stationRepo.GetStations().Skip(page * 10).Take(10)
-                .Where(s => s.Location.Contains(district));
-            if(ss.Any())
+                .Where(s => s.Location.ToLower().Contains(district.ToLower()));
+            if (ss == null)
             {
-                return ss;
+                return BadRequest();
             }
-            return null;
+            var json = JsonConvert.SerializeObject(ss, Formatting.Indented, new JsonSerializerSettings { PreserveReferencesHandling = PreserveReferencesHandling.None });
+
+            return Content(json, "application/json");
         }
 
         // GET: api/Stations/5
         [AllowAnonymous]
         [HttpGet(template: "get/{id}")]
-        public Station GetStation(int id)
+        public ActionResult GetStation(int id)
         {
             Station s = stationRepo.GetStation(id);
-            if(s == null)
+            if (s == null)
             {
-                return null;
+                return BadRequest();
             }
-            return s;
+            var json = JsonConvert.SerializeObject(s, Formatting.Indented, new JsonSerializerSettings { PreserveReferencesHandling = PreserveReferencesHandling.None });
+
+            return Content(json, "application/json");
         }
 
         // PUT: api/Stations/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut(template: "update")]
-        public String PutStation(Station station)
+        public String PutStation([FromBody] StationViewModel sViewModel, int id)
         {
             try
             {
-                stationRepo.UpdateStation(station);
+                Station s = new Station
+                {
+                    Id = id,
+                    Location = sViewModel.Location,
+                    Status = sViewModel.Status,
+                    Capability = sViewModel.Capability,
+                };
+                stationRepo.UpdateStation(s);
             }
             catch (Exception)
             {
@@ -89,11 +96,19 @@ namespace TnG_BE.Controllers
         // POST: api/Stations
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public String PostStation(Station station)
+        public String PostStation([FromBody] StationViewModel sViewModel)
         {
+            int id = stationRepo.GetStations().OrderBy(s => s.Id).Last().Id + 1;
             try
             {
-                stationRepo.InsertStation(station);
+                Station s = new Station
+                {
+                    Id = id,
+                    Location = sViewModel.Location,
+                    Status = sViewModel.Status,
+                    Capability = sViewModel.Capability,
+                };
+                stationRepo.InsertStation(s);
             }
             catch (Exception)
             {
@@ -108,7 +123,7 @@ namespace TnG_BE.Controllers
         {
             try
             {
-                if(StationExists(id))
+                if (StationExists(id))
                 {
                     stationRepo.Delete(id);
                 }

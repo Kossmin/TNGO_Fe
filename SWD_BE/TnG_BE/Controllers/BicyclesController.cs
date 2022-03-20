@@ -1,15 +1,9 @@
 ﻿#nullable disable
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
 using Enities.ViewModels;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using System.Data;
 using TnG_BE.Models;
 using TodoApi.IRepository;
 using TodoApi.Repository;
@@ -28,7 +22,7 @@ namespace TnG_BE.Controllers
         public BicyclesController(TnGContext context)
         {
             this.bicycleRepo = new BicycleRepository(context);
-            this.stationRepo = new StationRepository(context);  
+            this.stationRepo = new StationRepository(context);
             this.bicycleTypeRepo = new BicycleTypeRepository(context);
             _context = context;
         }
@@ -39,12 +33,12 @@ namespace TnG_BE.Controllers
         public ActionResult GetBicycles(int page)
         {
             IEnumerable<Bicycle> bs = bicycleRepo.GetBicycles().AsQueryable()
-                .Join(stationRepo.GetStations(), x => x.StationId, y => y.Id, (x,y) => new Bicycle(x,y))
+                .Join(stationRepo.GetStations(), x => x.StationId, y => y.Id, (x, y) => new Bicycle(x, y))
                 .Join(bicycleTypeRepo.GetBicycleTypes(), x => x.TypeId, y => y.Id, (x, y) => new Bicycle(x, y))
                 .Skip(page * 10).Take(10);
-            if(bs == null)
+            if (bs == null)
             {
-                return null;
+                return BadRequest();
             }
             var json = JsonConvert.SerializeObject(bs, Formatting.Indented, new JsonSerializerSettings { PreserveReferencesHandling = PreserveReferencesHandling.None });
 
@@ -54,17 +48,21 @@ namespace TnG_BE.Controllers
         // GET: api/v1/bicycles/5
         [AllowAnonymous]
         [HttpGet(template: "get/{id}")]
-        public Bicycle GetBicycle(int id)
+        public ActionResult GetBicycle(int id)
         {
             Bicycle b = bicycleRepo.GetBicycle(id);
             if (b == null)
             {
-                return null;
+                return BadRequest();
             }
 
             b.Station = stationRepo.GetStation(b.StationId);
             b.Type = bicycleTypeRepo.GetBicycleType(b.TypeId);
-            return b;
+
+
+            var json = JsonConvert.SerializeObject(b, Formatting.Indented, new JsonSerializerSettings { PreserveReferencesHandling = PreserveReferencesHandling.None });
+
+            return Content(json, "application/json");
         }
 
         [AllowAnonymous]
@@ -143,11 +141,12 @@ namespace TnG_BE.Controllers
         }
 
         [HttpPut(template: "station-update")]
-        public String StationStatus(Bicycle b, int stationId)
+        public String StationStatus(int BicycleId, int StationId)
         {
             try
             {
-                b.StationId = stationId;
+                Bicycle b = bicycleRepo.GetBicycle(BicycleId);
+                b.StationId = StationId;
                 bicycleRepo.UpdateBicycle(b);
             }
             catch (DataException)

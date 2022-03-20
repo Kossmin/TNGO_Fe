@@ -22,7 +22,11 @@ namespace TnG_BE.Models
         [JsonIgnore]
         [IgnoreDataMember]
         public virtual ICollection<Bicycle> Bicycles { get; set; }
+        [JsonIgnore]
+        [IgnoreDataMember]
         public virtual ICollection<Trip> TripStationEnds { get; set; }
+        [JsonIgnore]
+        [IgnoreDataMember]
         public virtual ICollection<Trip> TripStationStarts { get; set; }
     }
 }

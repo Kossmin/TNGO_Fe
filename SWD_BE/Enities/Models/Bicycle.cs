@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
 
 namespace TnG_BE.Models
@@ -49,6 +50,8 @@ namespace TnG_BE.Models
         [JsonIgnore]
         public virtual BicycleType? Type { get; set; }
         public virtual ICollection<BicycleHistory> BicycleHistories { get; set; }
+        [JsonIgnore]
+        [IgnoreDataMember]
         public virtual ICollection<Trip> Trips { get; set; }
     }
 }

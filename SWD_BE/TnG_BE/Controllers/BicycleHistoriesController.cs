@@ -1,12 +1,7 @@
 ﻿#nullable disable
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using TnG_BE.Models;
 using TodoApi.IRepository;
 using TodoApi.Repository;
@@ -31,26 +26,30 @@ namespace TnG_BE.Controllers
         // GET: api/v1/bicycle-histories
         [AllowAnonymous]
         [HttpGet]
-        public IEnumerable<BicycleHistory> GetBicycleHistories(int page)
+        public ActionResult GetBicycleHistories(int page)
         {
             IEnumerable<BicycleHistory> bicycleHistories = bHisRepo.GetBicycleHistories().Skip(page * 10).Take(10);
-            if(bicycleHistories == null)
+            if (bicycleHistories == null)
             {
-                return null;
+                return BadRequest();
             }
-            return bicycleHistories;
+            var json = JsonConvert.SerializeObject(bicycleHistories, Formatting.Indented, new JsonSerializerSettings { PreserveReferencesHandling = PreserveReferencesHandling.None });
+
+            return Content(json, "application/json");
         }
 
         // GET: api/v1/bicycle-histories/get/5
         [HttpGet(template: "get/{id}")]
-        public BicycleHistory GetBicycleHistory(int id)
+        public ActionResult GetBicycleHistory(int id)
         {
             BicycleHistory bh = bHisRepo.GetBicycleHistory(id);
             if (bh == null)
             {
-                return null;
+                return BadRequest();
             }
-            return bh;
+            var json = JsonConvert.SerializeObject(bh, Formatting.Indented, new JsonSerializerSettings { PreserveReferencesHandling = PreserveReferencesHandling.None });
+
+            return Content(json, "application/json");
         }
 
         // POST: api/v1/bicycle-histories
@@ -74,7 +73,8 @@ namespace TnG_BE.Controllers
                 try
                 {
                     bHisRepo.DeleteBicycleHistory(b.Id);
-                } catch (Exception ex)
+                }
+                catch (Exception ex)
                 {
                     return "Delete Failed";
                 }
