@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace TnG_BE.Models
 {
@@ -8,6 +8,7 @@ namespace TnG_BE.Models
         public User()
         {
             Deposits = new HashSet<Deposit>();
+            Trips = new HashSet<Trip>();
             Wallets = new HashSet<Wallet>();
         }
 
@@ -17,12 +18,15 @@ namespace TnG_BE.Models
         public string? Phone { get; set; }
         public string Email { get; set; } = null!;
         public string? Address { get; set; }
-        public int TripId { get; set; }
         public string? Token { get; set; }
         public string? FireBaseUid { get; set; }
-
-        public virtual Trip Trip { get; set; } = null!;
+        [JsonIgnore]
+        [IgnoreDataMember]
         public virtual ICollection<Deposit> Deposits { get; set; }
+        [JsonIgnore]
+        [IgnoreDataMember]
+        public virtual ICollection<Trip> Trips { get; set; }
+        [JsonIgnore]
         public virtual ICollection<Wallet> Wallets { get; set; }
     }
 }

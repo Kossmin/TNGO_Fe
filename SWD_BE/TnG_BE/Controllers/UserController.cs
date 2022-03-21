@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using TnG_BE.Models;
 using TodoApi.IRepository;
 using TodoApi.Repository;
@@ -23,16 +24,25 @@ namespace TnG_BE.Controllers
 
         // GET: api/Users
         [HttpGet]
-        public IEnumerable<User> GetUsers(int page, string name)
+        public ActionResult GetUsers(int page, string name)
         {
             if (name == null) name = "";
-            IEnumerable<User> ss = userRepo.GetUsers().Skip(page * 10).Take(10)
+
+            int totalUser = userRepo.GetUsers().Count();
+            int totalPage = totalUser / 10;
+            if (totalUser % 10 != 0) totalPage++;
+
+            IEnumerable<User> us = userRepo.GetUsers().Skip(page * 10).Take(10)
                 .Where(s => s.Name.Contains(name, StringComparison.OrdinalIgnoreCase));
-            if(ss.Any())
+            if (us == null)
             {
-                return ss;
+                return BadRequest();
             }
-            return null;
+
+            UserDTO users = new UserDTO(us, totalPage, page);
+            var json = JsonConvert.SerializeObject(, Formatting.Indented, new JsonSerializerSettings { PreserveReferencesHandling = PreserveReferencesHandling.None });
+
+            return Content(json, "application/json");
         }
 
         // GET: api/Users/5

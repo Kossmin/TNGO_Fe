@@ -24,14 +24,11 @@ namespace TnG_BE.Controllers
         // GET: api/BicycleTypes
         [AllowAnonymous]
         [HttpGet]
-        public ActionResult GetBicycleTypes(int page)
+        public ActionResult GetBicycleTypes()
         {
-            IEnumerable<BicycleType> ss = bTypeRepo.GetBicycleTypes().Skip(page * 10).Take(10);
-            if (ss == null)
-            {
-                return BadRequest();
-            }
-            var json = JsonConvert.SerializeObject(ss, Formatting.Indented, new JsonSerializerSettings { PreserveReferencesHandling = PreserveReferencesHandling.None });
+            IEnumerable<BicycleType> bs = bTypeRepo.GetBicycleTypes();
+
+            var json = JsonConvert.SerializeObject(bs, Formatting.Indented, new JsonSerializerSettings { PreserveReferencesHandling = PreserveReferencesHandling.None });
 
             return Content(json, "application/json");
         }
@@ -41,12 +38,12 @@ namespace TnG_BE.Controllers
         [HttpGet(template: "get/{id}")]
         public ActionResult GetBicycleType(int id)
         {
-            BicycleType s = bTypeRepo.GetBicycleType(id);
-            if (s == null)
+            BicycleType b = bTypeRepo.GetBicycleType(id);
+            if (b == null)
             {
                 return BadRequest();
             }
-            var json = JsonConvert.SerializeObject(s, Formatting.Indented, new JsonSerializerSettings { PreserveReferencesHandling = PreserveReferencesHandling.None });
+            var json = JsonConvert.SerializeObject(b, Formatting.Indented, new JsonSerializerSettings { PreserveReferencesHandling = PreserveReferencesHandling.None });
 
             return Content(json, "application/json");
         }
@@ -66,7 +63,7 @@ namespace TnG_BE.Controllers
             {
                 return "Add Failed";
             }
-            return "Add Success";
+            return "Add Succebs";
         }
 
         // DELETE: api/BicycleTypes/5
@@ -84,7 +81,7 @@ namespace TnG_BE.Controllers
             {
                 return "Delete Failed";
             }
-            return "Delete Success";
+            return "Delete Succebs";
         }
 
         private bool BicycleTypeExists(int id)

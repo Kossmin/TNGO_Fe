@@ -74,7 +74,7 @@ namespace TnG_BE.Controllers
                 {
                     bHisRepo.DeleteBicycleHistory(b.Id);
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     return "Delete Failed";
                 }

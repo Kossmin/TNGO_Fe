@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using TnG_BE.Models;
 using TodoApi.IRepository;
 using TodoApi.Repository;
@@ -22,83 +23,18 @@ namespace TnG_BE.Controllers
                 _context = context;
             }
 
-            // GET: api/Wallets
-            [HttpGet]
-            public IEnumerable<Wallet> GetWallets(int page)
-            {
-                IEnumerable<Wallet> ss = walletRepo.GetWallets().Skip(page * 10).Take(10);
-                if (ss.Any())
-                {
-                    return ss;
-                }
-                return null;
-            }
-
             // GET: api/Wallets/5
             [HttpGet(template: "get/{id}")]
-            public Wallet GetWallet(int id)
+            public ActionResult GetWallet(int id)
             {
-                Wallet s = walletRepo.GetWallet(id);
-                if (s == null)
+                Wallet w = walletRepo.GetWallet(id);
+                if (w == null)
                 {
-                    return null;
+                    return BadRequest();
                 }
-                return s;
-            }
+                var json = JsonConvert.SerializeObject(w, Formatting.Indented, new JsonSerializerSettings { PreserveReferencesHandling = PreserveReferencesHandling.None });
 
-            // PUT: api/Wallets/5
-            // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-            [HttpPut(template: "update")]
-            public String PutWallet(Wallet Wallet)
-            {
-                try
-                {
-                    walletRepo.UpdateWallet(Wallet);
-                }
-                catch (Exception)
-                {
-                    return "Update Failed";
-                }
-                return "Update Success";
-            }
-
-            // POST: api/Wallets
-            // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-            [HttpPost]
-            public String PostWallet(Wallet Wallet)
-            {
-                try
-                {
-                    walletRepo.InsertWallet(Wallet);
-                }
-                catch (Exception)
-                {
-                    return "Add Failed";
-                }
-                return "Add Success";
-            }
-
-            // DELETE: api/Wallets/5
-            [HttpDelete("{id}")]
-            public String DeleteWallet(int id)
-            {
-                try
-                {
-                    if (WalletExists(id))
-                    {
-                        walletRepo.DeleteWallet(id);
-                    }
-                }
-                catch (Exception)
-                {
-                    return "Delete Failed";
-                }
-                return "Delete Success";
-            }
-
-            private bool WalletExists(int id)
-            {
-                return _context.Wallets.Any(e => e.Id == id);
+                return Content(json, "application/json");
             }
         }
     }

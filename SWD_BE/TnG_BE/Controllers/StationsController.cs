@@ -3,6 +3,7 @@ using Enities.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using TnG_BE.DTO;
 using TnG_BE.Models;
 using TodoApi.IRepository;
 using TodoApi.Repository;
@@ -29,13 +30,21 @@ namespace TnG_BE.Controllers
         public ActionResult GetStations(int page, string district)
         {
             if (district == null) district = "";
+
+            int totalStation = stationRepo.GetStations().Count();
+            int totalPage = totalStation / 10;
+            if (totalStation % 10 != 0) totalPage++;
+
             IEnumerable<Station> ss = stationRepo.GetStations().Skip(page * 10).Take(10)
                 .Where(s => s.Location.ToLower().Contains(district.ToLower()));
-            if (ss == null)
+
+            StationDTO stations = new StationDTO(ss, totalPage, page += 1);
+
+            if (ss == null || page > totalPage)
             {
                 return BadRequest();
             }
-            var json = JsonConvert.SerializeObject(ss, Formatting.Indented, new JsonSerializerSettings { PreserveReferencesHandling = PreserveReferencesHandling.None });
+            var json = JsonConvert.SerializeObject(stations, Formatting.Indented, new JsonSerializerSettings { PreserveReferencesHandling = PreserveReferencesHandling.None });
 
             return Content(json, "application/json");
         }
@@ -98,7 +107,7 @@ namespace TnG_BE.Controllers
         [HttpPost]
         public String PostStation([FromBody] StationViewModel sViewModel)
         {
-            int id = stationRepo.GetStations().OrderBy(s => s.Id).Last().Id + 1;
+            int id = stationRepo.GetStations().OrderBy(s => s.Id).Last().Id++;
             try
             {
                 Station s = new Station

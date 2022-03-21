@@ -98,9 +98,14 @@ namespace TnG_BE.Models
 
                 entity.Property(e => e.Amount).HasColumnType("money");
 
-                entity.Property(e => e.Date).HasColumnType("date");
+                entity.Property(e => e.Date).HasColumnType("datetime");
 
                 entity.Property(e => e.Description).HasMaxLength(100);
+
+                entity.HasOne(d => d.Transaction)
+                    .WithMany(p => p.Deposits)
+                    .HasForeignKey(d => d.TransactionId)
+                    .HasConstraintName("FK__Deposit__Transac__6EF57B66");
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.Deposits)
@@ -115,7 +120,7 @@ namespace TnG_BE.Models
 
                 entity.Property(e => e.Id).ValueGeneratedNever();
 
-                entity.Property(e => e.Date).HasColumnType("date");
+                entity.Property(e => e.Date).HasColumnType("datetime");
 
                 entity.Property(e => e.Money).HasColumnType("money");
 
@@ -157,12 +162,6 @@ namespace TnG_BE.Models
 
                 entity.Property(e => e.Description).HasMaxLength(100);
 
-                entity.HasOne(d => d.Deposit)
-                    .WithMany(p => p.Transactions)
-                    .HasForeignKey(d => d.DepositId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_tblTransaction_tblDeposit");
-
                 entity.HasOne(d => d.Wallet)
                     .WithMany(p => p.Transactions)
                     .HasForeignKey(d => d.WalletId)
@@ -176,9 +175,9 @@ namespace TnG_BE.Models
 
                 entity.Property(e => e.Id).ValueGeneratedNever();
 
-                entity.Property(e => e.BeginTime).HasColumnType("date");
+                entity.Property(e => e.BeginTime).HasColumnType("datetime");
 
-                entity.Property(e => e.EndTime).HasColumnType("date");
+                entity.Property(e => e.EndTime).HasColumnType("datetime");
 
                 entity.HasOne(d => d.Bicycle)
                     .WithMany(p => p.Trips)
@@ -197,6 +196,11 @@ namespace TnG_BE.Models
                     .HasForeignKey(d => d.StationStartId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_tblTrip_tblStation");
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.Trips)
+                    .HasForeignKey(d => d.UserId)
+                    .HasConstraintName("FK__Trip__UserId__6E01572D");
             });
 
             modelBuilder.Entity<User>(entity =>
@@ -224,12 +228,6 @@ namespace TnG_BE.Models
                     .IsFixedLength();
 
                 entity.Property(e => e.Token).HasMaxLength(2000);
-
-                entity.HasOne(d => d.Trip)
-                    .WithMany(p => p.Users)
-                    .HasForeignKey(d => d.TripId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_tblUser_tblTrip");
             });
 
             modelBuilder.Entity<Wallet>(entity =>

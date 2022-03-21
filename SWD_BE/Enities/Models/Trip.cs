@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Runtime.Serialization;
+﻿using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
 
 namespace TnG_BE.Models
@@ -10,9 +8,8 @@ namespace TnG_BE.Models
         public Trip()
         {
             Payments = new HashSet<Payment>();
-            Users = new HashSet<User>();
         }
-        public Trip (Trip t, Bicycle b)
+        public Trip(Trip t, Bicycle b)
         {
             this.Id = t.Id;
             this.BeginTime = t.BeginTime;
@@ -25,7 +22,7 @@ namespace TnG_BE.Models
             this.StationEnd = t.StationEnd;
             this.Bicycle = b;
         }
-        public Trip (Trip t, Station start)
+        public Trip(Trip t, Station start)
         {
             this.Id = t.Id;
             this.BeginTime = t.BeginTime;
@@ -38,7 +35,7 @@ namespace TnG_BE.Models
             this.StationEnd = t.StationEnd;
             this.Bicycle = t.Bicycle;
         }
-        public Trip (Station end, Trip t)
+        public Trip(Station end, Trip t)
         {
             this.Id = t.Id;
             this.BeginTime = t.BeginTime;
@@ -52,19 +49,23 @@ namespace TnG_BE.Models
             this.Bicycle = t.Bicycle;
         }
         public int Id { get; set; }
-        public DateTime BeginTime { get; set; }
-        public DateTime EndTime { get; set; }
+        public DateTime? BeginTime { get; set; }
+        public DateTime? EndTime { get; set; }
         public int StationStartId { get; set; }
         public int BicycleId { get; set; }
         public int StationEndId { get; set; }
         public int? Status { get; set; }
+        public int? UserId { get; set; }
         [JsonIgnore]
         public virtual Bicycle Bicycle { get; set; } = null!;
         [JsonIgnore]
         public virtual Station StationEnd { get; set; } = null!;
         [JsonIgnore]
         public virtual Station StationStart { get; set; } = null!;
+        [JsonIgnore]
+        public virtual User? User { get; set; }
+        [JsonIgnore]
+        [IgnoreDataMember]
         public virtual ICollection<Payment> Payments { get; set; }
-        public virtual ICollection<User> Users { get; set; }
     }
 }

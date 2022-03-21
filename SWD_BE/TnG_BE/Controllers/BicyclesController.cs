@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Data;
+using TnG_BE.DTO;
 using TnG_BE.Models;
 using TodoApi.IRepository;
 using TodoApi.Repository;
@@ -32,19 +33,25 @@ namespace TnG_BE.Controllers
         [HttpGet]
         public ActionResult GetBicycles(int page)
         {
+            int totalBicycle = bicycleRepo.GetBicycles().Count();
+            int totalPage = totalBicycle / 10;
+            if (totalBicycle % 10 != 0) totalPage++;
+
             IEnumerable<Bicycle> bs = bicycleRepo.GetBicycles().AsQueryable()
                 .Join(stationRepo.GetStations(), x => x.StationId, y => y.Id, (x, y) => new Bicycle(x, y))
                 .Join(bicycleTypeRepo.GetBicycleTypes(), x => x.TypeId, y => y.Id, (x, y) => new Bicycle(x, y))
                 .Skip(page * 10).Take(10);
-            if (bs == null)
+
+            if (bs == null || page > totalPage)
             {
                 return BadRequest();
             }
-            var json = JsonConvert.SerializeObject(bs, Formatting.Indented, new JsonSerializerSettings { PreserveReferencesHandling = PreserveReferencesHandling.None });
+
+            BicycleDTO bicycles = new BicycleDTO(bs, totalPage, page += 1);
+            var json = JsonConvert.SerializeObject(bicycles, Formatting.Indented, new JsonSerializerSettings { PreserveReferencesHandling = PreserveReferencesHandling.None });
 
             return Content(json, "application/json");
         }
-
         // GET: api/v1/bicycles/5
         [AllowAnonymous]
         [HttpGet(template: "get/{id}")]
@@ -59,7 +66,6 @@ namespace TnG_BE.Controllers
             b.Station = stationRepo.GetStation(b.StationId);
             b.Type = bicycleTypeRepo.GetBicycleType(b.TypeId);
 
-
             var json = JsonConvert.SerializeObject(b, Formatting.Indented, new JsonSerializerSettings { PreserveReferencesHandling = PreserveReferencesHandling.None });
 
             return Content(json, "application/json");
@@ -69,6 +75,10 @@ namespace TnG_BE.Controllers
         [HttpGet(template: "search-type")]
         public ActionResult SearchBicycleByType(int type, int page)
         {
+            int totalBicycle = bicycleRepo.GetBicycles().Count();
+            int totalPage = totalBicycle / 10;
+            if (totalBicycle % 10 != 0) totalPage++;
+
             if (type == null) return BadRequest();
             IEnumerable<Bicycle> bs = bicycleRepo.GetBicycles()
                     .Where(b => b.TypeId == type)
@@ -76,8 +86,8 @@ namespace TnG_BE.Controllers
                     .Join(stationRepo.GetStations(), x => x.StationId, y => y.Id, (x, y) => new Bicycle(x, y))
                     .Join(bicycleTypeRepo.GetBicycleTypes(), x => x.TypeId, y => y.Id, (x, y) => new Bicycle(x, y))
                     .Skip(page * 10).Take(10);
-
-            var json = JsonConvert.SerializeObject(bs, Formatting.Indented, new JsonSerializerSettings { PreserveReferencesHandling = PreserveReferencesHandling.None });
+            BicycleDTO bicycles = new BicycleDTO(bs, totalPage, page += 1);
+            var json = JsonConvert.SerializeObject(bicycles, Formatting.Indented, new JsonSerializerSettings { PreserveReferencesHandling = PreserveReferencesHandling.None });
 
             return Content(json, "application/json");
         }
@@ -87,6 +97,11 @@ namespace TnG_BE.Controllers
         public ActionResult SearchBicycleByPlate(string plate, int page)
         {
             if (plate == null) plate = "";
+
+            int totalBicycle = bicycleRepo.GetBicycles().Count();
+            int totalPage = totalBicycle / 10;
+            if (totalBicycle % 10 != 0) totalPage++;
+
             IEnumerable<Bicycle> bs = bicycleRepo.GetBicycles()
                     .Where(b => b.LicensePlate.Contains(plate))
                     .AsQueryable()
@@ -94,11 +109,36 @@ namespace TnG_BE.Controllers
                     .Join(bicycleTypeRepo.GetBicycleTypes(), x => x.TypeId, y => y.Id, (x, y) => new Bicycle(x, y))
                     .Skip(page * 10).Take(10);
 
-            var json = JsonConvert.SerializeObject(bs, Formatting.Indented, new JsonSerializerSettings { PreserveReferencesHandling = PreserveReferencesHandling.None });
+            BicycleDTO bicycles = new BicycleDTO(bs, totalPage, page += 1);
+            var json = JsonConvert.SerializeObject(bicycles, Formatting.Indented, new JsonSerializerSettings { PreserveReferencesHandling = PreserveReferencesHandling.None });
 
             return Content(json, "application/json");
         }
 
+        [AllowAnonymous]
+        [HttpGet(template: "avaiable-bicycles")]
+        public ActionResult GetAvailableBicycle(int page)
+        {
+            int totalBicycle = bicycleRepo.GetBicycles().Count();
+            int totalPage = totalBicycle / 10;
+            if (totalBicycle % 10 != 0) totalPage++;
+
+            IEnumerable<Bicycle> bs = bicycleRepo.GetBicycles().AsQueryable()
+                .Join(stationRepo.GetStations(), x => x.StationId, y => y.Id, (x, y) => new Bicycle(x, y))
+                .Join(bicycleTypeRepo.GetBicycleTypes(), x => x.TypeId, y => y.Id, (x, y) => new Bicycle(x, y))
+                .Where(x => x.Status == 1)
+                .Skip(page * 10).Take(10);
+
+            if (bs == null || page > totalPage)
+            {
+                return BadRequest();
+            }
+
+            BicycleDTO bicycles = new BicycleDTO(bs, totalPage, page += 1);
+            var json = JsonConvert.SerializeObject(bicycles, Formatting.Indented, new JsonSerializerSettings { PreserveReferencesHandling = PreserveReferencesHandling.None });
+
+            return Content(json, "application/json");
+        }
         // PUT: api/v1/bicycles/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut(template: "update")]

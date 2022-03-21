@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Enities.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using TnG_BE.Models;
 using TodoApi.IRepository;
 using TodoApi.Repository;
@@ -17,46 +19,58 @@ namespace TnG_BE.Controllers
             private IPaymentRepository paymentRepo;
             private ITransactionRepository transactionRepo;
             private IWalletRepository walletRepo;
+            private IUserRepository userRepo;
             public PaymentsController(TnGContext context)
             {
                 this.paymentRepo = new PaymentRepository(context);
                 this.transactionRepo = new TransactionRepository(context);
                 this.walletRepo = new WalletRepository(context);
+                this.userRepo = new UserRepository(context);
                 _context = context;
             }
 
             // GET: api/Payments
             [HttpGet]
-            public IEnumerable<Payment> GetPayments(int page)
+            public ActionResult GetPayments(int page)
             {
-                IEnumerable<Payment> ss = paymentRepo.GetPayments().Skip(page * 10).Take(10);
-                if(ss.Any())
+                IEnumerable<Payment> ps = paymentRepo.GetPayments().Skip(page * 10).Take(10);
+                if (ps == null)
                 {
-                    return ss;
+                    return BadRequest();
                 }
-                return null;
+                var json = JsonConvert.SerializeObject(ps, Formatting.Indented, new JsonSerializerSettings { PreserveReferencesHandling = PreserveReferencesHandling.None });
+
+                return Content(json, "application/json");
             }
 
             // GET: api/Payments/5
             [HttpGet(template: "get/{id}")]
-            public Payment GetPayment(int id)
+            public ActionResult GetPayment(int id)
             {
-                Payment s = paymentRepo.GetPayment(id);
-                if (s == null)
+                Payment p = paymentRepo.GetPayment(id);
+                if (p == null)
                 {
-                    return null;
+                    return BadRequest();
                 }
-                return s;
+                var json = JsonConvert.SerializeObject(p, Formatting.Indented, new JsonSerializerSettings { PreserveReferencesHandling = PreserveReferencesHandling.None });
+
+                return Content(json, "application/json");
             }
 
             // PUT: api/Payments/5
             // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
             [HttpPut(template: "update")]
-            public String PutPayment(Payment Payment)
+            public String PutPayment([FromBody] PaymentViewModel pViewModel, int paymentId)
             {
                 try
                 {
-                    paymentRepo.UpdatePayment(Payment);
+                    Payment p = paymentRepo.GetPayment(paymentId);
+                    p.Date = pViewModel.Date;
+                    p.Type = pViewModel.Type;
+                    p.Money = pViewModel.Money;
+                    p.TripId = pViewModel.TripId;
+                    p.PaymentCode = pViewModel.PaymentCode;
+                    paymentRepo.UpdatePayment(p);
                 }
                 catch (Exception)
                 {
@@ -68,11 +82,37 @@ namespace TnG_BE.Controllers
             // POST: api/Payments
             // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
             [HttpPost]
-            public String PostPayment(Payment Payment)
+            public String PostPayment([FromBody] PaymentViewModel pViewModel)
             {
+                DateTime payTime = DateTime.Now;
+                Transaction t = new Transaction();
+                Wallet w = walletRepo.GetWallet(userRepo.GetUser(pViewModel.UserId).Id); //Wallet Id = User Id
                 try
                 {
-                    paymentRepo.InsertPayment(Payment);
+                    if (pViewModel.Money > w.Money) return "Not enough Money";
+
+                    w.Money = w.Money - pViewModel.Money;
+                    walletRepo.UpdateWallet(w);
+
+                    t.Id = transactionRepo.GetTransactions().OrderBy(x => x.Id).Last().Id + 1;
+                    t.Amount = w.Money;
+                    t.Date = payTime;
+                    t.Description = "Spended " + w.Money;
+                    t.WalletId = w.Id;
+                    transactionRepo.InsertTransaction(t);
+
+                    Payment p = new Payment
+                    {
+                        Id = paymentRepo.GetPayments().OrderBy(x => x.Id).Last().Id + 1,
+                        Date = payTime,
+                        Type = 1,
+                        Money = pViewModel.Money,
+                        TripId = pViewModel.TripId,
+                        TransactionId = t.Id,
+                        PaymentCode = pViewModel.PaymentCode,
+                    };
+
+                    paymentRepo.InsertPayment(p);
                 }
                 catch (Exception)
                 {

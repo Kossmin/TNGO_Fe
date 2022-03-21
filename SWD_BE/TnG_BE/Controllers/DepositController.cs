@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Enities.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using TnG_BE.Models;
 using TodoApi.IRepository;
 using TodoApi.Repository;
@@ -29,35 +31,45 @@ namespace TnG_BE.Controllers
 
             // GET: api/Deposits
             [HttpGet]
-            public IEnumerable<Deposit> GetDeposits(int page)
+            public ActionResult GetDeposits(int page)
             {
-                IEnumerable<Deposit> ss = depositRepo.GetDeposits().Skip(page * 10).Take(10);
-                if(ss.Any())
+                IEnumerable<Deposit> ds = depositRepo.GetDeposits().Skip(page * 10).Take(10);
+                if (ds == null)
                 {
-                    return ss;
+                    return BadRequest();
                 }
-                return null;
+
+                var json = JsonConvert.SerializeObject(ds, Formatting.Indented, new JsonSerializerSettings { PreserveReferencesHandling = PreserveReferencesHandling.None });
+
+                return Content(json, "application/json");
             }
             // GET: api/Deposits/5
             [HttpGet(template: "get/{id}")]
-            public Deposit GetDeposit(int id)
+            public ActionResult GetDeposit(int id)
             {
                 Deposit s = depositRepo.GetDeposit(id);
                 if (s == null)
                 {
-                    return null;
+                    return BadRequest();
                 }
-                return s;
+                var json = JsonConvert.SerializeObject(s, Formatting.Indented, new JsonSerializerSettings { PreserveReferencesHandling = PreserveReferencesHandling.None });
+
+                return Content(json, "application/json");
             }
 
             // PUT: api/Deposits/5
             // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
             [HttpPut(template: "update")]
-            public String PutDeposit(Deposit Deposit)
+            public String PutDeposit([FromBody] DepositViewModel dViewModel, int depostId)
             {
                 try
                 {
-                    depositRepo.UpdateDeposit(Deposit);
+                    Deposit d = depositRepo.GetDeposit(depostId);
+                    d.Date = dViewModel.Date;
+                    d.Amount = dViewModel.Amount;
+                    d.Description = dViewModel.Description;
+                    d.UserId = dViewModel.UserId;
+                    depositRepo.UpdateDeposit(d);
                 }
                 catch (Exception)
                 {
@@ -68,17 +80,15 @@ namespace TnG_BE.Controllers
             // POST: api/Deposits
             // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
             [HttpPost]
-            public String PostDeposit(Deposit Deposit)
+            public string PostDeposit([FromBody] DepositViewModel dViewModel)
             {
                 DateTime depositTime = DateTime.Now;
                 Transaction t = new Transaction();
-                Wallet w = walletRepo.GetWallet(userRepo.GetUser(Deposit.UserId).Id);  //User, Wallet same Id
+                Wallet w = walletRepo.GetWallet(userRepo.GetUser(dViewModel.UserId).Id);  //User, Wallet same Id
                 int depositId = depositRepo.GetDeposits().OrderBy(d => d.Id).Last().Id + 1;
                 try
                 {
-                    Deposit.Id = depositId;
-
-                    w.Money = w.Money + Deposit.Amount;
+                    w.Money = w.Money + dViewModel.Amount;
                     walletRepo.UpdateWallet(w);
 
                     t.Id = transactionRepo.GetTransactions().OrderBy(t => t.Id).Last().Id + 1;
@@ -86,10 +96,18 @@ namespace TnG_BE.Controllers
                     t.Date = depositTime;
                     t.Description = "Added " + w.Money + " to the Wallet";
                     t.WalletId = w.Id;
-                    t.DepositId = depositId;
                     transactionRepo.InsertTransaction(t);
 
-                    depositRepo.InsertDepsoit(Deposit);
+                    Deposit deposit = new Deposit
+                    {
+                        Id = depositId,
+                        Date = DateTime.Now,
+                        Amount = dViewModel.Amount,
+                        Description = dViewModel.Description,
+                        UserId = dViewModel.UserId,
+                    };
+
+                    depositRepo.InsertDepsoit(deposit);
                 }
                 catch (Exception)
                 {

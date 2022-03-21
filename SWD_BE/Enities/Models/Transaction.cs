@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace TnG_BE.Models
 {
@@ -7,6 +7,7 @@ namespace TnG_BE.Models
     {
         public Transaction()
         {
+            Deposits = new HashSet<Deposit>();
             Payments = new HashSet<Payment>();
         }
 
@@ -15,10 +16,14 @@ namespace TnG_BE.Models
         public decimal Amount { get; set; }
         public string? Description { get; set; }
         public int WalletId { get; set; }
-        public int DepositId { get; set; }
 
-        public virtual Deposit Deposit { get; set; } = null!;
+        [JsonIgnore]
         public virtual Wallet Wallet { get; set; } = null!;
+        [JsonIgnore]
+        [IgnoreDataMember]
+        public virtual ICollection<Deposit> Deposits { get; set; }
+        [JsonIgnore]
+        [IgnoreDataMember]
         public virtual ICollection<Payment> Payments { get; set; }
     }
 }

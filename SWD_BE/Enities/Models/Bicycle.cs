@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Runtime.Serialization;
+﻿using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
 
 namespace TnG_BE.Models
@@ -23,6 +21,8 @@ namespace TnG_BE.Models
             this.TypeId = b.TypeId;
             this.Station = s;
             this.Type = b.Type;
+            this.BicycleHistories = b.BicycleHistories;
+            this.Trips = b.Trips;
         }
 
         public Bicycle(Bicycle b, BicycleType t)
@@ -36,6 +36,22 @@ namespace TnG_BE.Models
             this.TypeId = b.TypeId;
             this.Station = b.Station;
             this.Type = t;
+            this.BicycleHistories = b.BicycleHistories;
+            this.Trips = b.Trips;
+        }
+        public Bicycle(Bicycle b)
+        {
+            this.Id = b.Id;
+            this.Status = b.Status;
+            this.Description = b.Description;
+            this.StationId = b.StationId;
+            this.LicensePlate = b.LicensePlate;
+            this.Image = b.Image;
+            this.TypeId = b.TypeId;
+            this.Station = b.Station;
+            this.Type = b.Type;
+            this.BicycleHistories = b.BicycleHistories;
+            this.Trips = b.Trips;
         }
         public int Id { get; set; }
         public int? Status { get; set; }
@@ -49,6 +65,8 @@ namespace TnG_BE.Models
         public virtual Station Station { get; set; } = null!;
         [JsonIgnore]
         public virtual BicycleType? Type { get; set; }
+        [JsonIgnore]
+        [IgnoreDataMember]
         public virtual ICollection<BicycleHistory> BicycleHistories { get; set; }
         [JsonIgnore]
         [IgnoreDataMember]

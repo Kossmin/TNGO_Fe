@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace TnG_BE.Models
 {
@@ -15,7 +15,11 @@ namespace TnG_BE.Models
         public string? Description { get; set; }
         public int UserId { get; set; }
 
+        [JsonIgnore]
+        [IgnoreDataMember]
         public virtual User User { get; set; } = null!;
+        [JsonIgnore]
+        [IgnoreDataMember]
         public virtual ICollection<Transaction> Transactions { get; set; }
     }
 }
