@@ -14,101 +14,172 @@ import {
   Pagination,
   FormControl,
   Dropdown,
+  Alert,
   ResponsiveEmbed,
 } from "react-bootstrap";
 import { Link } from "react-router-dom";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useReducer, useRef } from "react";
 import axios from "axios";
 
 import "./Bicycles.css";
 import "./Component.css";
+import bicycleType from "../assets/const/bicycleType";
 
 const BicycleTable = (props) => {
   const [bicycleData, setBicycleData] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [type, setType] = useState({});
+  const [plate, setPlate] = useState("");
+  const [searchType, setSearchType] = useState("");
+  const [pageIndex, setPageIndex] = useState(0);
+  const [changes, setChanges] = useState("");
 
-  const fetchData = () => {
-    return axios.get("http://18.189.6.9/api/v1/bicycle").then((data) => {
-      console.log(data.data);
-      const bicycles = data.data.map((bicData) => {
-        return (
-          <tr
-            className={`${
-              bicData.status == 1
-                ? "success"
-                : bicData.status == 2 || bicData.status == 3
-                ? "danger"
-                : "warning"
-            }`}
-            key={bicData.id}
-          >
-            <td>{bicData.id}</td>
-            <td>Bicycle</td>
-            <td>{bicData.description}</td>
-            <td>{bicData.licensePlate}</td>
-            <td>Niger</td>
-            <td>
-              {bicData.status == 1
-                ? "Available"
-                : bicData.status == 2
-                ? "Occupied"
-                : bicData.status == 3
-                ? "Maintainance"
-                : "Deleted"}
-            </td>
-            <td>
-              <Button
-                onClick={() => {
-                  let obj = data.find((o) => o.id === key);
-                  alert(
-                    "You've clicked EDIT button on \n{ \nName: " +
-                      obj.name +
-                      ", \nposition: " +
-                      obj.position +
-                      ", \noffice: " +
-                      obj.office +
-                      ", \nage: " +
-                      obj.age +
-                      "\n}."
-                  );
-                }}
-                variant="warning"
-                size="sm"
-                className="text-warning btn-link edit"
-              >
-                <i className="fa fa-edit" />
-              </Button>
-              <Button
-                onClick={() => {
-                  var newData = data;
-                  newData.find((o, i) => {
-                    if (o.id === key) {
-                      // here you should add some custom code so you can delete the data
-                      // from this component and from your server as well
-                      newData.splice(i, 1);
-                      return true;
-                    }
-                    return false;
-                  });
-                  setData([...newData]);
-                }}
-                variant="danger"
-                size="sm"
-                className="btn-link remove text-danger"
-              >
-                <i className="fa fa-times" />
-              </Button>
-            </td>
-          </tr>
-        );
+  const searchBicycleWithType = async () => {
+    setIsLoading(true);
+    return await axios
+      .get(
+        "http://18.189.6.9/api/v1/bicycle/search-type?type=" +
+          searchType +
+          "&page=" +
+          pageIndex
+      )
+      .then((data) => {
+        console.log(searchType);
+        setBicycleData(mapData(data.data));
+        setIsLoading(false);
       });
-      setBicycleData(bicycles);
+  };
+
+  const searchBicycleWithPlate = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+    return await axios
+      .get(
+        "http://18.189.6.9/api/v1/bicycle/search-plate?plate=" +
+          plate +
+          "&page=" +
+          pageIndex
+      )
+      .then((data) => {
+        console.log(data.data);
+        setBicycleData(mapData(data.data));
+        setIsLoading(false);
+      });
+  };
+
+  const fetchTypeData = async () => {
+    return await axios
+      .get("http://18.189.6.9/api/v1/bicycle-type")
+      .then((response) => {
+        const tmpType = response.data.map((data) => {
+          return (
+            <Dropdown.Item
+              onClick={() => {
+                if (data.Id != searchType) {
+                  setSearchType(data.Id);
+                  setPageIndex(0);
+                }
+              }}
+              key={data.Id}
+              value={data.Id}
+            >
+              {data.Type}
+            </Dropdown.Item>
+          );
+        });
+        setType(tmpType);
+      });
+  };
+
+  const fetchBicycleData = async () => {
+    setIsLoading(true);
+    return await axios
+      .get("http://18.189.6.9/api/v1/bicycle?page=" + pageIndex)
+      .then((data) => {
+        setBicycleData(mapData(data.data));
+        setIsLoading(false);
+      });
+  };
+
+  const mapData = (data) => {
+    return data.map((bicData) => {
+      return (
+        <tr
+          className={`${
+            bicData.Status == 1
+              ? "success"
+              : bicData.Status == 2 || bicData.Status == 3
+              ? "warning"
+              : "danger"
+          }`}
+          key={bicData.Id}
+        >
+          <td>{bicData.Id}</td>
+          <td>{bicData.Type.Type}</td>
+          <td>{bicData.Description}</td>
+          <td>{bicData.LicensePlate}</td>
+          <td>{bicData.Station.Location}</td>
+          <td>
+            {bicData.Status == 1
+              ? "Available"
+              : bicData.Status == 2
+              ? "Occupied"
+              : bicData.Status == 3
+              ? "Maintainance"
+              : "Deleted"}
+          </td>
+          <td>
+            <Button
+              onClick={() => {
+                let obj = data.find((o) => o.id === key);
+                alert(
+                  "You've clicked EDIT button on \n{ \nName: " +
+                    obj.name +
+                    ", \nposition: " +
+                    obj.position +
+                    ", \noffice: " +
+                    obj.office +
+                    ", \nage: " +
+                    obj.age +
+                    "\n}."
+                );
+              }}
+              variant="warning"
+              size="sm"
+              className="text-warning btn-link edit"
+            >
+              <i className="fa fa-edit" />
+            </Button>
+            <Button
+              onClick={() => {
+                if (confirm("Are you sure you want to hide this bicycle?")) {
+                  axios
+                    .delete("http://18.189.6.9/api/v1/bicycle/" + bicData.Id)
+                    .then(() => setChanges(bicData.Id));
+                }
+              }}
+              variant="danger"
+              size="sm"
+              className="btn-link remove text-danger"
+            >
+              <i className="fa fa-times" />
+            </Button>
+          </td>
+        </tr>
+      );
     });
   };
 
   useEffect(() => {
-    fetchData();
-  }, []);
+    if (searchType != "") {
+      searchBicycleWithType();
+    } else {
+      fetchBicycleData();
+    }
+    fetchTypeData();
+    console.log(searchType);
+  }, [pageIndex, searchType, plate, changes]);
 
   return (
     <Container>
@@ -119,24 +190,23 @@ const BicycleTable = (props) => {
               Bicycle types
             </Dropdown.Toggle>
 
-            <Dropdown.Menu>
-              <Dropdown.Item href="#/action-1" active>
-                Bicycles
-              </Dropdown.Item>
-              <Dropdown.Item href="#/action-2">Hybrid bike</Dropdown.Item>
-              <Dropdown.Item href="#/action-3">Electric bike</Dropdown.Item>
-            </Dropdown.Menu>
+            <Dropdown.Menu>{type}</Dropdown.Menu>
           </Dropdown>
         </Col>
         <Col md="5" sm="12">
-          <Form className="d-flex">
+          <Form className="d-flex" onSubmit={searchBicycleWithPlate}>
             <FormControl
+              onChange={(e) => {
+                setPlate(e.target.value);
+              }}
               type="search"
-              placeholder="Search By Id"
+              placeholder="Search by lisence plate"
               className="me-2"
               aria-label="Search"
             />
-            <Button variant="outline-success">Search</Button>
+            <Button type="submit" variant="outline-success">
+              Search
+            </Button>
           </Form>
         </Col>
         <Col className="flex-justify-right">
@@ -147,6 +217,11 @@ const BicycleTable = (props) => {
           </Link>
         </Col>
       </Row>
+      {isLoading && (
+        <Row>
+          <Alert variant="info">Loading...</Alert>
+        </Row>
+      )}
       <Row>
         <Col md="12">
           <Card className="regular-table-with-color">
@@ -167,7 +242,7 @@ const BicycleTable = (props) => {
                     <th>Actions</th>
                   </tr>
                 </thead>
-                <tbody>{bicycleData}</tbody>
+                {!isLoading && <tbody>{bicycleData}</tbody>}
               </Table>
             </Card.Body>
           </Card>
@@ -176,8 +251,8 @@ const BicycleTable = (props) => {
       <Row>
         <Col sm="12">
           <Pagination className="pagination pagination-no-border justify-content">
-            <Pagination.Item>«</Pagination.Item>
-            <Pagination.Item>1</Pagination.Item>
+            <Pagination.Item onClick={() => setPageIndex(0)}>«</Pagination.Item>
+            <Pagination.Item onClick={() => setPageIndex(1)}>1</Pagination.Item>
             <Pagination.Item>2</Pagination.Item>
             <Pagination.Item active>3</Pagination.Item>
             <Pagination.Item>4</Pagination.Item>

@@ -21,16 +21,23 @@ import "./Component.css";
 
 const StationsTable = (props) => {
   const [stationData, setStationData] = useState([]);
+  const [pageIndex, setPageIndex] = useState(0);
 
   const fetchData = () => {
-    return axios.get("http://18.189.6.9/api/v1/station").then((data) => {
-      const stations = data.data.map((station) => {
-        return (
+    return axios
+      .get("http://18.189.6.9/api/v1/station?page=" + pageIndex)
+      .then((data) => {
+        return data.data["$values"];
+      })
+      .then((staData) => {
+        const stations = staData.map((station) => (
           <tr className="success" key={station.id}>
-            <td>{station.id}</td>
+            <td>{station.id.toString()}</td>
             <td>{station.status}</td>
             <td>
-              {station.bicycles}/{station.capability}
+              {console.log(station.bicycles)}
+              {station.bicycles["$values"].length}/
+              {station.capability.toString()}
             </td>
             <td>{station.location}</td>
             <td>
@@ -77,15 +84,14 @@ const StationsTable = (props) => {
               </Button>
             </td>
           </tr>
-        );
+        ));
+        setStationData(stations);
       });
-      setStationData(stations);
-    });
   };
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [pageIndex]);
 
   return (
     <Container>

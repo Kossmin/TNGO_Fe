@@ -15,8 +15,78 @@ import {
   FormControl,
   Dropdown,
 } from "react-bootstrap";
+import { useState, useEffect } from "react";
+import color from "../assets/const/color";
+import axios from "axios";
 
 const BicycleTypeTable = (props) => {
+  const [pageIndex, setPageIndex] = useState(0);
+  const [bicycleType, setBicycleType] = useState([]);
+  const fetchData = async () => {
+    return await axios
+      .get("http://18.189.6.9/api/v1/bicycle-type?page=" + pageIndex)
+      .then((data) => {
+        console.log(color[1]);
+        const types = data.data["$values"].map((typeData) => {
+          return (
+            <tr key={typeData.id}>
+              <td>{typeData.id}</td>
+              <td>{typeData.type}</td>
+              <td>{color[typeData.color]}</td>
+              <td>{typeData.dateAdded}</td>
+              <td>100</td>
+              <td>
+                <Button
+                  onClick={() => {
+                    let obj = data.find((o) => o.id === key);
+                    alert(
+                      "You've clicked EDIT button on \n{ \nName: " +
+                        obj.name +
+                        ", \nposition: " +
+                        obj.position +
+                        ", \noffice: " +
+                        obj.office +
+                        ", \nage: " +
+                        obj.age +
+                        "\n}."
+                    );
+                  }}
+                  variant="warning"
+                  size="sm"
+                  className="text-warning btn-link edit"
+                >
+                  <i className="fa fa-edit" />
+                </Button>
+                <Button
+                  onClick={() => {
+                    var newData = data;
+                    newData.find((o, i) => {
+                      if (o.id === key) {
+                        // here you should add some custom code so you can delete the data
+                        // from this component and from your server as well
+                        newData.splice(i, 1);
+                        return true;
+                      }
+                      return false;
+                    });
+                    setData([...newData]);
+                  }}
+                  variant="danger"
+                  size="sm"
+                  className="btn-link remove text-danger"
+                >
+                  <i className="fa fa-times" />
+                </Button>
+              </td>
+            </tr>
+          );
+        });
+        setBicycleType(types);
+      });
+  };
+
+  useEffect(() => fetchData(), [pageIndex]);
+
   return (
     <Container>
       <Row>
@@ -47,7 +117,7 @@ const BicycleTypeTable = (props) => {
               {/* <p className="card-category">Here is a subtitle for this table</p> */}
             </Card.Header>
             <Card.Body className="table-responsive p-0">
-              <Table className="table-hover">
+              <Table className="table-hover" striped>
                 <thead>
                   <tr>
                     <th>ID</th>
@@ -58,158 +128,7 @@ const BicycleTypeTable = (props) => {
                     <th>Actions</th>
                   </tr>
                 </thead>
-                <tbody>
-                  <tr className="warning">
-                    <td>1</td>
-                    <td>Bicycle</td>
-                    <td>Yellow</td>
-                    <td>18/2/2022</td>
-                    <td>100</td>
-                    <td>
-                      <Button
-                        onClick={() => {
-                          let obj = data.find((o) => o.id === key);
-                          alert(
-                            "You've clicked EDIT button on \n{ \nName: " +
-                              obj.name +
-                              ", \nposition: " +
-                              obj.position +
-                              ", \noffice: " +
-                              obj.office +
-                              ", \nage: " +
-                              obj.age +
-                              "\n}."
-                          );
-                        }}
-                        variant="warning"
-                        size="sm"
-                        className="text-warning btn-link edit"
-                      >
-                        <i className="fa fa-edit" />
-                      </Button>
-                      <Button
-                        onClick={() => {
-                          var newData = data;
-                          newData.find((o, i) => {
-                            if (o.id === key) {
-                              // here you should add some custom code so you can delete the data
-                              // from this component and from your server as well
-                              newData.splice(i, 1);
-                              return true;
-                            }
-                            return false;
-                          });
-                          setData([...newData]);
-                        }}
-                        variant="danger"
-                        size="sm"
-                        className="btn-link remove text-danger"
-                      >
-                        <i className="fa fa-times" />
-                      </Button>
-                    </td>
-                  </tr>
-                  <tr className="success">
-                    <td>2</td>
-                    <td>Bicycle</td>
-                    <td>Green</td>
-                    <td>18/2/2022</td>
-                    <td>100</td>
-                    <td>
-                      <Button
-                        onClick={() => {
-                          let obj = data.find((o) => o.id === key);
-                          alert(
-                            "You've clicked EDIT button on \n{ \nName: " +
-                              obj.name +
-                              ", \nposition: " +
-                              obj.position +
-                              ", \noffice: " +
-                              obj.office +
-                              ", \nage: " +
-                              obj.age +
-                              "\n}."
-                          );
-                        }}
-                        variant="warning"
-                        size="sm"
-                        className="text-warning btn-link edit"
-                      >
-                        <i className="fa fa-edit" />
-                      </Button>
-                      <Button
-                        onClick={() => {
-                          var newData = data;
-                          newData.find((o, i) => {
-                            if (o.id === key) {
-                              // here you should add some custom code so you can delete the data
-                              // from this component and from your server as well
-                              newData.splice(i, 1);
-                              return true;
-                            }
-                            return false;
-                          });
-                          setData([...newData]);
-                        }}
-                        variant="danger"
-                        size="sm"
-                        className="btn-link remove text-danger"
-                      >
-                        <i className="fa fa-times" />
-                      </Button>
-                    </td>
-                  </tr>
-                  <tr className="danger">
-                    <td>3</td>
-                    <td>Hydrid bike</td>
-                    <td>Red</td>
-                    <td>18/2/2022</td>
-                    <td>100</td>
-                    <td>
-                      <Button
-                        onClick={() => {
-                          let obj = data.find((o) => o.id === key);
-                          alert(
-                            "You've clicked EDIT button on \n{ \nName: " +
-                              obj.name +
-                              ", \nposition: " +
-                              obj.position +
-                              ", \noffice: " +
-                              obj.office +
-                              ", \nage: " +
-                              obj.age +
-                              "\n}."
-                          );
-                        }}
-                        variant="warning"
-                        size="sm"
-                        className="text-warning btn-link edit"
-                      >
-                        <i className="fa fa-edit" />
-                      </Button>
-                      <Button
-                        onClick={() => {
-                          var newData = data;
-                          newData.find((o, i) => {
-                            if (o.id === key) {
-                              // here you should add some custom code so you can delete the data
-                              // from this component and from your server as well
-                              newData.splice(i, 1);
-                              return true;
-                            }
-                            return false;
-                          });
-                          setData([...newData]);
-                        }}
-                        variant="danger"
-                        size="sm"
-                        className="btn-link remove text-danger"
-                      >
-                        <i className="fa fa-times" />
-                      </Button>
-                    </td>
-                  </tr>
-                </tbody>
+                <tbody>{bicycleType}</tbody>
               </Table>
             </Card.Body>
           </Card>

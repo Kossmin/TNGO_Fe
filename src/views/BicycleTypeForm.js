@@ -23,10 +23,17 @@ const BicycleTypeForm = (props) => {
             <Card.Body>
               <Form action="#" method="#">
                 <Form.Group>
+                  <label>Description</label>
+                  <Form.Control
+                    placeholder="Description"
+                    type="text"
+                  ></Form.Control>
+                </Form.Group>
+                <Form.Group>
                   <label>Plate Number</label>
                   <Form.Control
-                    placeholder="Enter email"
-                    type="email"
+                    placeholder="Enter plate number"
+                    type="text"
                   ></Form.Control>
                 </Form.Group>
                 <Form.Group>
