@@ -14,93 +14,129 @@ import {
   FormControl,
 } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import "./Bicycles.css";
 import "./Component.css";
 
+import stationStatusConst from "../assets/const/stationStatus";
+
 const StationsTable = (props) => {
   const [stationData, setStationData] = useState([]);
   const [pageIndex, setPageIndex] = useState(0);
+  const [changes, setChanges] = useState();
+  const [totalPage, setTotalPage] = useState({
+    totalPage: 0,
+    elementArray: [],
+  });
+  const searchLocationString = useRef();
 
   const fetchData = () => {
     return axios
       .get("http://18.189.6.9/api/v1/station?page=" + pageIndex)
-      .then((data) => {
-        return data.data["$values"];
-      })
+
       .then((staData) => {
-        const stations = staData.map((station) => (
-          <tr className="success" key={station.id}>
-            <td>{station.id.toString()}</td>
-            <td>{station.status}</td>
-            <td>
-              {console.log(station.bicycles)}
-              {station.bicycles["$values"].length}/
-              {station.capability.toString()}
-            </td>
-            <td>{station.location}</td>
-            <td>
-              <Button
-                onClick={() => {
-                  let obj = data.find((o) => o.id === key);
-                  alert(
-                    "You've clicked EDIT button on \n{ \nName: " +
-                      obj.name +
-                      ", \nposition: " +
-                      obj.position +
-                      ", \noffice: " +
-                      obj.office +
-                      ", \nage: " +
-                      obj.age +
-                      "\n}."
-                  );
-                }}
-                variant="warning"
-                size="sm"
-                className="text-warning btn-link edit"
-              >
-                <i className="fa fa-edit" />
-              </Button>
-              <Button
-                onClick={() => {
-                  var newData = data;
-                  newData.find((o, i) => {
-                    if (o.id === key) {
-                      // here you should add some custom code so you can delete the data
-                      // from this component and from your server as well
-                      newData.splice(i, 1);
-                      return true;
-                    }
-                    return false;
-                  });
-                  setData([...newData]);
-                }}
-                variant="danger"
-                size="sm"
-                className="btn-link remove text-danger"
-              >
-                <i className="fa fa-times" />
-              </Button>
-            </td>
-          </tr>
-        ));
-        setStationData(stations);
+        console.log(staData);
+        mapPaging(staData.data.TotalPage);
+        setStationData(transformData(staData.data.Stations));
       });
+  };
+
+  const mapPaging = (numberOfPage) => {
+    let tmp = [];
+    if (pageIndex == 0) {
+      if (numberOfPage <= 3) {
+        for (let i = 0; i < numberOfPage; i++) {
+          tmp.push(i);
+        }
+      } else {
+        for (let i = 0; i < 3; i++) {
+          tmp.push(i);
+        }
+      }
+    } else if (pageIndex == totalPage.totalPage - 1) {
+      if (numberOfPage <= 3) {
+        for (let i = 0; i < numberOfPage; i++) {
+          tmp.push(i);
+        }
+      } else {
+        for (let i = pageIndex - 2; i <= pageIndex; i++) {
+          tmp.push(i);
+        }
+      }
+    } else {
+      for (let i = pageIndex - 1; i <= pageIndex + 1; i++) {
+        tmp.push(i);
+      }
+    }
+    setTotalPage({ totalPage: numberOfPage, elementArray: tmp });
+  };
+
+  const transformData = (data) => {
+    return data.map((station) => (
+      <tr className="success" key={station.Id}>
+        <td>{station.Id.toString()}</td>
+        <td>{stationStatusConst[station.Status].Status}</td>
+        <td>{station.Capability.toString()}</td>
+        <td>{station.Location}</td>
+        <td>
+          <Button
+            onClick={() => {
+              let obj = data.find((o) => o.id === key);
+              alert(
+                "You've clicked EDIT button on \n{ \nName: " +
+                  obj.name +
+                  ", \nposition: " +
+                  obj.position +
+                  ", \noffice: " +
+                  obj.office +
+                  ", \nage: " +
+                  obj.age +
+                  "\n}."
+              );
+            }}
+            variant="warning"
+            size="sm"
+            className="text-warning btn-link edit"
+          >
+            <i className="fa fa-edit" />
+          </Button>
+          <Button
+            onClick={() => {
+              if (confirm("Are you sure you want to hide this station?")) {
+                axios
+                  .delete("http://18.189.6.9/api/v1/station/" + station.Id)
+                  .then(() => setChanges(station.Id));
+              }
+            }}
+            variant="danger"
+            size="sm"
+            className="btn-link remove text-danger"
+          >
+            <i className="fa fa-times" />
+          </Button>
+        </td>
+      </tr>
+    ));
+  };
+
+  const searchByLocation = (e) => {
+    e.preventDefault();
   };
 
   useEffect(() => {
     fetchData();
-  }, [pageIndex]);
+  }, [pageIndex, changes]);
 
   return (
     <Container>
       <Row className="justify-content-between">
         <Col xs="12" sm="5">
-          <Form className="d-flex">
+          <Form className="d-flex" onSubmit={searchByLocation}>
             <FormControl
+              ref={searchLocationString}
               type="search"
-              placeholder="Search By Id"
+              placeholder="Search By Location"
               className="me-2"
               aria-label="Search"
             />
@@ -142,13 +178,38 @@ const StationsTable = (props) => {
       <Row>
         <Col sm="12">
           <Pagination className="pagination pagination-no-border justify-content">
-            <Pagination.Item>«</Pagination.Item>
-            <Pagination.Item>1</Pagination.Item>
-            <Pagination.Item>2</Pagination.Item>
-            <Pagination.Item active>3</Pagination.Item>
-            <Pagination.Item>4</Pagination.Item>
-            <Pagination.Item>5</Pagination.Item>
-            <Pagination.Item>»</Pagination.Item>
+            {pageIndex != 0 && (
+              <Pagination.Item onClick={() => setPageIndex(pageIndex - 1)}>
+                «
+              </Pagination.Item>
+            )}
+            {totalPage.elementArray.map((index) => {
+              if (index == pageIndex) {
+                return (
+                  <Pagination.Item
+                    active
+                    key={index}
+                    onClick={() => setPageIndex(index--)}
+                  >
+                    {index + 1}
+                  </Pagination.Item>
+                );
+              } else {
+                return (
+                  <Pagination.Item
+                    key={index}
+                    onClick={() => setPageIndex(index--)}
+                  >
+                    {index + 1}
+                  </Pagination.Item>
+                );
+              }
+            })}
+            {pageIndex != totalPage.totalPage - 1 && (
+              <Pagination.Item onClick={() => setPageIndex(pageIndex + 1)}>
+                »
+              </Pagination.Item>
+            )}
           </Pagination>
         </Col>
       </Row>

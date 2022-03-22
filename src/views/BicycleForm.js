@@ -10,24 +10,32 @@ import {
   Row,
   Col,
 } from "react-bootstrap";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 import axios from "axios";
 
 import statusConst from "../assets/const/bicycleStatus";
 import { storage } from "../views/Auth/Firebase";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
+import { useHistory } from "react-router-dom";
 
 const BicycleForm = (props) => {
   const [type, setType] = useState();
   const [status, setStatus] = useState();
   const [station, setStation] = useState();
+  const [imageUrl, setImageUrl] = useState(null);
+  const plateInput = useRef();
+  const descriptionInput = useRef();
+  const statusInput = useRef();
+  const stationInput = useRef();
+  const typeInput = useRef();
+  const navigate = useHistory();
 
   const fetchTypeData = async () => {
     return await axios
       .get("http://18.189.6.9/api/v1/bicycle-type")
       .then((response) => {
-        console.log(response.data);
+        console.log(response.data[0].Id);
         const tmpType = response.data.map((data) => {
           return (
             <option key={`${data.Id}+type`} value={data.Id}>
@@ -40,6 +48,7 @@ const BicycleForm = (props) => {
   };
 
   const setStatusData = () => {
+    // setStatusInput(statusConst[0].Id);
     const transferStatus = statusConst.map((data) => {
       return (
         <option key={`${data.Id}+status`} value={data.Id}>
@@ -50,56 +59,69 @@ const BicycleForm = (props) => {
     setStatus(transferStatus);
   };
 
-  const setStationData = () => {
-    return axios.get("http://18.189.6.9/api/v1/station").then((response) => {
-      const transformedStation = response.data.map((data) => {
-        return (
-          <option key={`${data.Id}+station`} value={data.Id}>
-            {data.Location}
-          </option>
-        );
+  const setStationData = async () => {
+    return await axios
+      .get("http://18.189.6.9/api/v1/station")
+      .then((response) => {
+        // setStationInput(response.data.Stations[0].Id);
+        const transformedStation = response.data.Stations.map((data) => {
+          return (
+            <option key={`${data.Id}+station`} value={data.Id}>
+              {data.Location}
+            </option>
+          );
+        });
+        setStation(transformedStation);
       });
-      setStation(transformedStation);
-    });
   };
 
-  useEffect(() => {
-    fetchTypeData();
+  useEffect(async () => {
+    await fetchTypeData();
     setStatusData();
-    setStationData();
+    await setStationData();
+    console.log(
+      stationInput.current.value,
+      typeInput.current.value,
+      statusInput.current.value
+    );
   }, []);
 
   const submitHandler = (e) => {
     e.preventDefault();
-    console.log(e.target[5].files[0]);
     uploadFile(e.target[5].files[0]);
-    axios
-      .post("http://18.189.6.9/api/v1/bicycle", {
-        status: 0,
-        description: "string",
-        stationId: 0,
-        licensePlate: "string",
-        image: "string",
-        typeId: 0,
-      })
-      .then((response) => console.log(response));
   };
 
-  // const uploadFileHandler = (e) => {
-  //   console.log(e);
-  // };
+  const selectImage = (e) => {
+    const fileReader = new FileReader();
+    fileReader.readAsDataURL(e.target.files[0]);
+    fileReader.onload = function () {
+      setImageUrl(fileReader.result);
+    };
+  };
 
   const uploadFile = (file) => {
     if (!file) return;
-    console.log(file);
-    const storageRef = ref(storage, `/files/${file.name}.png`);
+    const storageRef = ref(storage, `/files/${file.name}`);
     const uploadTask = uploadBytesResumable(storageRef, file);
 
     uploadTask.on("state_changed", () => {
-      getDownloadURL(uploadTask.snapshot.ref).then((url) => console.log(url));
+      return getDownloadURL(uploadTask.snapshot.ref).then((url) => {
+        const addedBicycle = {
+          status: statusInput.current.value,
+          description: descriptionInput.current.value,
+          stationId: stationInput.current.value,
+          licensePlate: plateInput.current.value,
+          image: url,
+          typeId: typeInput.current.value,
+        };
+        console.log(addedBicycle);
+        axios
+          .post("http://18.189.6.9/api/v1/bicycle", addedBicycle)
+          .then((response) => {
+            navigate.push("/admin/bicycles");
+          });
+      });
     });
-    // const fileReader = new fileReader();
-    // fileReader.readAsDataURL(file);
   };
   return (
     <Container>
@@ -114,13 +136,17 @@ const BicycleForm = (props) => {
                 <Form.Group>
                   <label>Plate Number</label>
                   <Form.Control
+                    required
                     placeholder="Plate number"
                     type="text"
+                    ref={plateInput}
                   ></Form.Control>
                 </Form.Group>
                 <Form.Group>
                   <Form.Label>Status</Form.Label>
-                  <Form.Control as="select">{status}</Form.Control>
+                  <Form.Control ref={statusInput} as="select">
+                    {status}
+                  </Form.Control>
                 </Form.Group>
                 <Form.Group>
                   <label>Description</label>
@@ -129,22 +155,30 @@ const BicycleForm = (props) => {
                     type="text"
                     as="textarea"
                     style={{ height: "100px" }}
+                    ref={descriptionInput}
                   ></Form.Control>
                 </Form.Group>
                 <Form.Group>
                   <Form.Label>Station</Form.Label>
-                  <Form.Control as="select">{station}</Form.Control>
+                  <Form.Control ref={stationInput} as="select">
+                    {station}
+                  </Form.Control>
                 </Form.Group>
                 <Form.Group>
                   <Form.Label>Type</Form.Label>
-                  <Form.Control as="select">{type}</Form.Control>
+                  <Form.Control ref={typeInput} as="select">
+                    {type}
+                  </Form.Control>
                 </Form.Group>
                 <Form.Group controlId="formFile" className="mb-3">
                   <Form.Label>Image</Form.Label>
-                  <Form.File />
-                  <Button onClick={uploadFile} className="btn-fill">
+                  <Form.File onChange={selectImage} />
+                  {/* <Button onClick={uploadFile} className="btn-fill">
                     Upload Image
-                  </Button>
+                  </Button> */}
+                  {imageUrl != null && (
+                    <img src={imageUrl.toString()} height="200" />
+                  )}
                 </Form.Group>
                 <Button className="btn-fill" type="submit" variant="info">
                   Submit

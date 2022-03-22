@@ -1,0 +1,26 @@
+const HcmDistrict = [
+  { Id: 1, District: "Thủ Đức" },
+  { Id: 12, District: "Quận Bình Tân" },
+  { Id: 2, District: "Quận 1" },
+  { Id: 13, District: "Quận Bình Thạnh" },
+  { Id: 3, District: "Quận 3" },
+  { Id: 14, District: "Quận Gò Vấp" },
+  { Id: 4, District: "Quận 4" },
+  { Id: 15, District: "Quận Phú Nhuận" },
+  { Id: 5, District: "Quận 5" },
+  { Id: 16, District: "Quận Tân Bình" },
+  { Id: 6, District: "Quận 6" },
+  { Id: 17, District: "Quận Tân Phú" },
+  { Id: 7, District: "Quận 7" },
+  { Id: 18, District: "Huyện Bình Chánh" },
+  { Id: 8, District: "Quận 8" },
+  { Id: 19, District: "Huyện Cần Giờ" },
+  { Id: 9, District: "Quận 10" },
+  { Id: 20, District: "Huyện Củ Chi" },
+  { Id: 10, District: "Quận 11" },
+  { Id: 21, District: "Huyện Hóc Môn" },
+  { Id: 11, District: "Quận 12" },
+  { Id: 22, District: "Huyện Nhà Bè" },
+];
+
+export default HcmDistrict;

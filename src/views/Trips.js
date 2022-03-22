@@ -14,10 +14,40 @@ import {
   Pagination,
   FormControl,
 } from "react-bootstrap";
+import { useState, useRef, useEffect } from "react";
+import axios from "axios";
 
 import "./Bicycles.css";
 
 const Trips = (props) => {
+  const [pageIndex, setPageIndex] = useState(0);
+  const [totalPage, setTotalPage] = useState(0);
+  const [trips, setTrips] = useState();
+
+  const fetchTrip = async () => {
+    return await axios
+      .get("http://18.189.6.9/api/v1/trip?page=" + pageIndex)
+      .then((response) => {
+        const transformedTrip = response.data.map((trip) => {
+          return (
+            <tr className="success">
+              <td>1</td>
+              <td>Dakota Rice (Success)</td>
+              <td>14:25</td>
+              <td>16:20</td>
+              <td>Niger</td>
+              <td>Oud-Turnhout</td>
+            </tr>
+          );
+        });
+        setTrips(transformedTrip);
+      });
+  };
+
+  useEffect(() => {
+    fetchTrip();
+  }, []);
+
   return (
     <Container>
       <Row className="justify-content-end">
@@ -52,64 +82,7 @@ const Trips = (props) => {
                     <th>To</th>
                   </tr>
                 </thead>
-                <tbody>
-                  <tr className="success">
-                    <td>1</td>
-                    <td>Dakota Rice (Success)</td>
-                    <td>14:25</td>
-                    <td>16:20</td>
-                    <td>Niger</td>
-                    <td>Oud-Turnhout</td>
-                  </tr>
-                  <tr>
-                    <td>2</td>
-                    <td>Minerva Hooper</td>
-                    <td>14:25</td>
-                    <td>16:20</td>
-                    <td>Curaçao</td>
-                    <td>Sinaai-Waas</td>
-                  </tr>
-                  <tr className="info">
-                    <td>3</td>
-                    <td>Sage Rodriguez (Info)</td>
-                    <td>14:25</td>
-                    <td>16:20</td>
-                    <td>Netherlands</td>
-                    <td>Baileux</td>
-                  </tr>
-                  <tr>
-                    <td>4</td>
-                    <td>Philip Chaney</td>
-                    <td>14:25</td>
-                    <td>16:20</td>
-                    <td>Korea, South</td>
-                    <td>Overland Park</td>
-                  </tr>
-                  <tr className="danger">
-                    <td>5</td>
-                    <td>Doris Greene (Danger)</td>
-                    <td>14:25</td>
-                    <td>16:20</td>
-                    <td>Malawi</td>
-                    <td>Feldkirchen in Kärnten</td>
-                  </tr>
-                  <tr>
-                    <td>6</td>
-                    <td>Mason Porter</td>
-                    <td>14:25</td>
-                    <td>16:20</td>
-                    <td>Chile</td>
-                    <td>Gloucester</td>
-                  </tr>
-                  <tr className="warning">
-                    <td>7</td>
-                    <td>Mike Chaney (Warning)</td>
-                    <td>14:25</td>
-                    <td>16:20</td>
-                    <td>Romania</td>
-                    <td>Bucharest</td>
-                  </tr>
-                </tbody>
+                <tbody>{trips}</tbody>
               </Table>
             </Card.Body>
           </Card>

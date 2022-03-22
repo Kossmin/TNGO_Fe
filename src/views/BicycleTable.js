@@ -30,10 +30,16 @@ const BicycleTable = (props) => {
   const [bicycleData, setBicycleData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [type, setType] = useState({});
-  const [plate, setPlate] = useState("");
+  const plate = useRef();
   const [searchType, setSearchType] = useState("");
   const [pageIndex, setPageIndex] = useState(0);
   const [changes, setChanges] = useState("");
+  const [totalPage, setTotalPage] = useState({
+    totalPage: 0,
+    elementArray: [],
+  });
+
+  const [pagingElement, setPagingElement] = useState();
 
   const searchBicycleWithType = async () => {
     setIsLoading(true);
@@ -57,7 +63,7 @@ const BicycleTable = (props) => {
     return await axios
       .get(
         "http://18.189.6.9/api/v1/bicycle/search-plate?plate=" +
-          plate +
+          plate.current.value +
           "&page=" +
           pageIndex
       )
@@ -97,13 +103,45 @@ const BicycleTable = (props) => {
     return await axios
       .get("http://18.189.6.9/api/v1/bicycle?page=" + pageIndex)
       .then((data) => {
+        setTotalPage({ totalPage: data.data.TotalPage, elementArray: [] });
         setBicycleData(mapData(data.data));
+        mapPaing(data.data.TotalPage);
         setIsLoading(false);
       });
   };
 
+  const mapPaing = (numberOfPage) => {
+    let tmp = [];
+    if (pageIndex == 0) {
+      if (numberOfPage <= 3) {
+        for (let i = 0; i < numberOfPage; i++) {
+          tmp.push(i);
+        }
+      } else {
+        for (let i = 0; i < 3; i++) {
+          tmp.push(i);
+        }
+      }
+    } else if (pageIndex == totalPage.totalPage - 1) {
+      if (numberOfPage <= 3) {
+        for (let i = 0; i < numberOfPage; i++) {
+          tmp.push(i);
+        }
+      } else {
+        for (let i = pageIndex - 2; i <= pageIndex; i++) {
+          tmp.push(i);
+        }
+      }
+    } else {
+      for (let i = pageIndex - 1; i <= pageIndex + 1; i++) {
+        tmp.push(i);
+      }
+    }
+    setTotalPage({ totalPage: numberOfPage, elementArray: tmp });
+  };
+
   const mapData = (data) => {
-    return data.map((bicData) => {
+    return data.Bicycles.map((bicData) => {
       return (
         <tr
           className={`${
@@ -178,7 +216,6 @@ const BicycleTable = (props) => {
       fetchBicycleData();
     }
     fetchTypeData();
-    console.log(searchType);
   }, [pageIndex, searchType, plate, changes]);
 
   return (
@@ -196,9 +233,10 @@ const BicycleTable = (props) => {
         <Col md="5" sm="12">
           <Form className="d-flex" onSubmit={searchBicycleWithPlate}>
             <FormControl
-              onChange={(e) => {
-                setPlate(e.target.value);
-              }}
+              // onChange={(e) => {
+              //   setPlate(e.target.value);
+              // }}
+              ref={plate}
               type="search"
               placeholder="Search by lisence plate"
               className="me-2"
@@ -251,13 +289,38 @@ const BicycleTable = (props) => {
       <Row>
         <Col sm="12">
           <Pagination className="pagination pagination-no-border justify-content">
-            <Pagination.Item onClick={() => setPageIndex(0)}>«</Pagination.Item>
-            <Pagination.Item onClick={() => setPageIndex(1)}>1</Pagination.Item>
-            <Pagination.Item>2</Pagination.Item>
-            <Pagination.Item active>3</Pagination.Item>
-            <Pagination.Item>4</Pagination.Item>
-            <Pagination.Item>5</Pagination.Item>
-            <Pagination.Item>»</Pagination.Item>
+            {pageIndex != 0 && (
+              <Pagination.Item onClick={() => setPageIndex(pageIndex - 1)}>
+                «
+              </Pagination.Item>
+            )}
+            {totalPage.elementArray.map((index) => {
+              if (index == pageIndex) {
+                return (
+                  <Pagination.Item
+                    active
+                    key={index}
+                    onClick={() => setPageIndex(index--)}
+                  >
+                    {index + 1}
+                  </Pagination.Item>
+                );
+              } else {
+                return (
+                  <Pagination.Item
+                    key={index}
+                    onClick={() => setPageIndex(index--)}
+                  >
+                    {index + 1}
+                  </Pagination.Item>
+                );
+              }
+            })}
+            {pageIndex != totalPage.totalPage - 1 && (
+              <Pagination.Item onClick={() => setPageIndex(pageIndex + 1)}>
+                »
+              </Pagination.Item>
+            )}
           </Pagination>
         </Col>
       </Row>
