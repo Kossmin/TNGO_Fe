@@ -33,7 +33,10 @@ namespace TnG_BE.Controllers
             [HttpGet]
             public ActionResult GetDeposits(int page)
             {
-                IEnumerable<Deposit> ds = depositRepo.GetDeposits().Skip(page * 10).Take(10);
+                IEnumerable<Deposit> ds = depositRepo.GetDeposits().AsQueryable()
+                    .Join(transactionRepo.GetTransactions(), x => x.TransactionId, y => y.Id, (x, y) => new Deposit(x, y))
+                    .Join(userRepo.GetUsers(), x => x.UserId, y => y.Id, (x, y) => new Deposit(x, y))
+                    .Skip(page * 10).Take(10);
                 if (ds == null)
                 {
                     return BadRequest();
@@ -52,6 +55,9 @@ namespace TnG_BE.Controllers
                 {
                     return BadRequest();
                 }
+                s.Transaction = transactionRepo.GetTransaction((int)s.TransactionId);
+                s.User = userRepo.GetUser(s.UserId);
+
                 var json = JsonConvert.SerializeObject(s, Formatting.Indented, new JsonSerializerSettings { PreserveReferencesHandling = PreserveReferencesHandling.None });
 
                 return Content(json, "application/json");

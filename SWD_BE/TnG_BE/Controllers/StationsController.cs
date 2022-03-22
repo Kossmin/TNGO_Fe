@@ -31,7 +31,7 @@ namespace TnG_BE.Controllers
         {
             if (district == null) district = "";
 
-            int totalStation = stationRepo.GetStations().Count();
+            int totalStation = stationRepo.GetStations().Where(s => s.Location.ToLower().Contains(district.ToLower())).Count();
             int totalPage = totalStation / 10;
             if (totalStation % 10 != 0) totalPage++;
 
@@ -40,7 +40,7 @@ namespace TnG_BE.Controllers
 
             StationDTO stations = new StationDTO(ss, totalPage, page += 1);
 
-            if (ss == null || page > totalPage)
+            if (page > totalPage)
             {
                 return BadRequest();
             }
@@ -107,7 +107,7 @@ namespace TnG_BE.Controllers
         [HttpPost]
         public String PostStation([FromBody] StationViewModel sViewModel)
         {
-            int id = stationRepo.GetStations().OrderBy(s => s.Id).Last().Id++;
+            int id = stationRepo.GetStations().OrderBy(s => s.Id).Last().Id + 1;
             try
             {
                 Station s = new Station
@@ -119,8 +119,9 @@ namespace TnG_BE.Controllers
                 };
                 stationRepo.InsertStation(s);
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                Console.WriteLine(e);
                 return "Add Failed";
             }
             return "Add Success";

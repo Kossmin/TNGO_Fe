@@ -24,24 +24,22 @@ namespace TnG_BE.Controllers
             _config = config;
         }
 
-        /*        [HttpPost]
-                [AllowAnonymous]
-                public async Task<String> SignUp(string Email, String Password, String Name)
-                {
-                    try
-                    {
-                        var auth = new FirebaseAuthProvider(new FirebaseConfig(ApiKey));
+        //[HttpPost]
+        //public async Task<String> SignUp(string Email, String Password, String Name)
+        //{
+        //    try
+        //    {
+        //        var auth = new FirebaseAuthProvider(new FirebaseConfig(ApiKey));
 
-                        var a = await auth.CreateUserWithEmailAndPasswordAsync(Email, Password, Name, true);
-                        ModelState.AddModelError(string.Empty, "Please Verify your email then login Plz.");
-                    }
-                    catch (Exception ex)
-                    {
-                        ModelState.AddModelError(string.Empty, ex.Message);
-                    }
-
-                    return "Create Success";
-                }*/
+        //        var a = await auth.CreateUserWithEmailAndPasswordAsync(Email, Password, Name, true);
+        //        ModelState.AddModelError(string.Empty, "Please Verify your email then login.");
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        ModelState.AddModelError(string.Empty, ex.Message);
+        //    }
+        //    return "Create Success";
+        //}
 
         [HttpGet(template: "login")]
         public async Task<IActionResult> LoginAsync(string token)
@@ -75,9 +73,9 @@ namespace TnG_BE.Controllers
             var message = new Message()
             {
                 Data = new Dictionary<string, string>()
-    {
-        { "myData", "1337" },
-    },
+                {
+                    { "myData", "1337" },
+                },
                 Token = registrationToken,
                 Topic = "all",
                 Notification = new Notification()

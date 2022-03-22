@@ -27,6 +27,7 @@ namespace TnG_BE.Models
         [IgnoreDataMember]
         public virtual ICollection<Trip> Trips { get; set; }
         [JsonIgnore]
+        [IgnoreDataMember]
         public virtual ICollection<Wallet> Wallets { get; set; }
     }
 }

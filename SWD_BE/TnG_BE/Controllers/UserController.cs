@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using TnG_BE.DTO;
 using TnG_BE.Models;
 using TodoApi.IRepository;
 using TodoApi.Repository;
@@ -24,11 +25,12 @@ namespace TnG_BE.Controllers
 
         // GET: api/Users
         [HttpGet]
+        [AllowAnonymous]
         public ActionResult GetUsers(int page, string name)
         {
             if (name == null) name = "";
 
-            int totalUser = userRepo.GetUsers().Count();
+            int totalUser = userRepo.GetUsers().Where(s => s.Name.Contains(name, StringComparison.OrdinalIgnoreCase)).Count();
             int totalPage = totalUser / 10;
             if (totalUser % 10 != 0) totalPage++;
 
@@ -40,21 +42,23 @@ namespace TnG_BE.Controllers
             }
 
             UserDTO users = new UserDTO(us, totalPage, page);
-            var json = JsonConvert.SerializeObject(, Formatting.Indented, new JsonSerializerSettings { PreserveReferencesHandling = PreserveReferencesHandling.None });
+            var json = JsonConvert.SerializeObject(users, Formatting.Indented, new JsonSerializerSettings { PreserveReferencesHandling = PreserveReferencesHandling.None });
 
             return Content(json, "application/json");
         }
 
         // GET: api/Users/5
         [HttpGet(template: "get/{id}")]
-        public User GetUser(int id)
+        public ActionResult GetUser(int id)
         {
             User s = userRepo.GetUser(id);
             if (s == null)
             {
-                return null;
+                return BadRequest();
             }
-            return s;
+            var json = JsonConvert.SerializeObject(s, Formatting.Indented, new JsonSerializerSettings { PreserveReferencesHandling = PreserveReferencesHandling.None });
+
+            return Content(json, "application/json");
         }
 
         [HttpGet(template: "login")]

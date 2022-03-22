@@ -25,8 +25,8 @@ namespace TodoApi.Repository
 
         public int InsertBicycle(Bicycle bicycle)
         {
-            _context.Bicycles.AddAsync(bicycle);
-            _context.SaveChangesAsync();
+            _context.Bicycles.Add(bicycle);
+            _context.SaveChanges();
             return bicycle.Id;
         }
 

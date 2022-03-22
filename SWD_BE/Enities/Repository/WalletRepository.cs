@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using TnG_BE.Models;
+﻿using TnG_BE.Models;
 using TodoApi.IRepository;
 
 namespace TodoApi.Repository
@@ -7,7 +6,7 @@ namespace TodoApi.Repository
     public class WalletRepository : IWalletRepository
     {
         private readonly TnGContext _context;
-        public WalletRepository (TnGContext context)
+        public WalletRepository(TnGContext context)
         {
             _context = context;
         }

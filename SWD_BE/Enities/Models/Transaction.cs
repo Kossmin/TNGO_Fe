@@ -10,7 +10,15 @@ namespace TnG_BE.Models
             Deposits = new HashSet<Deposit>();
             Payments = new HashSet<Payment>();
         }
-
+        public Transaction(Transaction t, Wallet w)
+        {
+            this.Id = t.Id;
+            this.Date = t.Date;
+            this.Amount = t.Amount;
+            this.Description = t.Description;
+            this.WalletId = t.WalletId;
+            this.Wallet = w;
+        }
         public int Id { get; set; }
         public DateTime Date { get; set; }
         public decimal Amount { get; set; }

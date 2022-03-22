@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using TnG_BE.Models;
 using TodoApi.IRepository;
 using TodoApi.Repository;
@@ -13,50 +14,64 @@ namespace TnG_BE.Controllers
     {
         private readonly TnGContext _context;
         private ITransactionRepository transRepo;
+        private IWalletRepository walletRepo;
         public TransactionsController(TnGContext context)
         {
             this.transRepo = new TransactionRepository(context);
+            this.walletRepo = new WalletRepository(context);
             _context = context;
         }
 
         // GET: api/Transactions
         [HttpGet]
-        public IEnumerable<Transaction> GetTransactions(int page)
+        public ActionResult GetTransactions(int page)
         {
-            IEnumerable<Transaction> ss = transRepo.GetTransactions().Skip(page * 10).Take(10);
-            if(ss.Any())
+            IEnumerable<Transaction> ss = transRepo.GetTransactions().AsQueryable()
+                .Join(walletRepo.GetWallets(), x => x.WalletId, y => y.Id, (x, y) => new Transaction(x, y))
+                .Skip(page * 10).Take(10);
+            if (ss == null)
             {
-                return ss;
+                return BadRequest();
             }
-            return null;
+            var json = JsonConvert.SerializeObject(ss, Formatting.Indented, new JsonSerializerSettings { PreserveReferencesHandling = PreserveReferencesHandling.None });
+
+            return Content(json, "application/json");
         }
 
         // GET: api/Transactions/5
         [HttpGet(template: "get/{id}")]
-        public Transaction GetTransaction(int id)
+        public ActionResult GetTransaction(int id)
         {
             Transaction s = transRepo.GetTransaction(id);
             if (s == null)
             {
                 return null;
             }
-            return s;
+            s.Wallet = walletRepo.GetWallet(s.WalletId);
+
+            var json = JsonConvert.SerializeObject(s, Formatting.Indented, new JsonSerializerSettings { PreserveReferencesHandling = PreserveReferencesHandling.None });
+
+            return Content(json, "application/json");
         }
 
         [HttpGet(template: "get-user-transaction")]
-        public IEnumerable<Transaction> GetUserTransaction(int page, int walletId)
+        public ActionResult GetUserTransaction(int page, int walletId)
         {
-            IEnumerable<Transaction> ss = transRepo.GetTransactions()
-                .Where(t => t.WalletId == walletId);
+            IEnumerable<Transaction> ss = transRepo.GetTransactions().AsQueryable()
+                .Where(t => t.WalletId == walletId)
+                .Join(walletRepo.GetWallets(), x => x.WalletId, y => y.Id, (x, y) => new Transaction(x, y));
             if (ss.Any())
             {
-                return ss;
+                return BadRequest();
             }
-            return null;
+
+            var json = JsonConvert.SerializeObject(ss, Formatting.Indented, new JsonSerializerSettings { PreserveReferencesHandling = PreserveReferencesHandling.None });
+
+            return Content(json, "application/json");
         }
-        
+
         [HttpDelete(template: "delete-transaction-history")]
-        public string DeleteTransactionHistory (int walletId)
+        public string DeleteTransactionHistory(int walletId)
         {
             try
             {

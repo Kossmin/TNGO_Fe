@@ -48,6 +48,17 @@ namespace TnG_BE.Models
             this.StationEnd = end;
             this.Bicycle = t.Bicycle;
         }
+        public Trip(Trip t, User u)
+        {
+            this.Id = t.Id;
+            this.BeginTime = t.BeginTime;
+            this.EndTime = t.EndTime;
+            this.StationStartId = t.StationStartId;
+            this.StationEndId = t.StationEndId;
+            this.BicycleId = t.BicycleId;
+            this.Status = t.Status;
+            this.User = u;
+        }
         public int Id { get; set; }
         public DateTime? BeginTime { get; set; }
         public DateTime? EndTime { get; set; }

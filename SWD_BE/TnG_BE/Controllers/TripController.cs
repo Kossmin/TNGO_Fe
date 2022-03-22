@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using TnG_BE.DTO;
 using TnG_BE.Models;
 using TodoApi.IRepository;
 using TodoApi.Repository;
@@ -18,12 +19,14 @@ namespace TnG_BE.Controllers
         private IBicycleHistoryRepository bHistoryRepo;
         private IStationRepository stationRepo;
         private IBicycleRepository bicycleRepo;
+        private IUserRepository userRepo;
         public TripsController(TnGContext context)
         {
             this.tripRepo = new TripRepository(context);
             this.bHistoryRepo = new BicycleHistoryRepository(context);
             this.stationRepo = new StationRepository(context);
             this.bicycleRepo = new BicycleRepository(context);
+            this.userRepo = new UserRepository(context);
             _context = context;
         }
 
@@ -32,19 +35,22 @@ namespace TnG_BE.Controllers
         [HttpGet]
         public ActionResult GetTrips(int page)
         {
+            int totalTrip = tripRepo.GetTrips().Count();
+            int totalPage = totalTrip / 10;
+            if (totalTrip % 10 != 0) totalPage++;
+
             IEnumerable<Trip> ss = tripRepo.GetTrips().AsQueryable()
             .Join(bicycleRepo.GetBicycles(), x => x.BicycleId, y => y.Id, (x, y) => new Trip(x, y))
             .Join(stationRepo.GetStations(), x => x.StationStartId, y => y.Id, (x, y) => new Trip(x, y))
             .Join(stationRepo.GetStations(), x => x.StationEndId, y => y.Id, (x, y) => new Trip(y, x))
+            .Join(userRepo.GetUsers(), x => x.UserId, y => y.Id, (x, y) => new Trip(x, y))
             .Skip(page * 10).Take(10);
 
-            var json = JsonConvert.SerializeObject(ss, Formatting.Indented, new JsonSerializerSettings { PreserveReferencesHandling = PreserveReferencesHandling.None });
+            TripDTO trips = new TripDTO(ss, totalPage, page += 1);
 
-            if (ss.Any())
-            {
-                return Content(json, "application/json");
-            }
-            return BadRequest();
+            var json = JsonConvert.SerializeObject(trips, Formatting.Indented, new JsonSerializerSettings { PreserveReferencesHandling = PreserveReferencesHandling.None });
+
+            return Content(json, "application/json");
         }
 
         // GET: api/Trips/5
@@ -60,6 +66,7 @@ namespace TnG_BE.Controllers
             s.StationStart = stationRepo.GetStation(s.StationStartId);
             s.StationEnd = stationRepo.GetStation(s.StationEndId);
             s.Bicycle = bicycleRepo.GetBicycle(s.BicycleId);
+            s.User = userRepo.GetUser((int)s.UserId);
 
             var json = JsonConvert.SerializeObject(s, Formatting.Indented, new JsonSerializerSettings { PreserveReferencesHandling = PreserveReferencesHandling.None });
 

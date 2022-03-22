@@ -20,12 +20,14 @@ namespace TnG_BE.Controllers
             private ITransactionRepository transactionRepo;
             private IWalletRepository walletRepo;
             private IUserRepository userRepo;
+            private ITripRepository tripRepo;
             public PaymentsController(TnGContext context)
             {
                 this.paymentRepo = new PaymentRepository(context);
                 this.transactionRepo = new TransactionRepository(context);
                 this.walletRepo = new WalletRepository(context);
                 this.userRepo = new UserRepository(context);
+                this.tripRepo = new TripRepository(context);
                 _context = context;
             }
 
@@ -33,7 +35,10 @@ namespace TnG_BE.Controllers
             [HttpGet]
             public ActionResult GetPayments(int page)
             {
-                IEnumerable<Payment> ps = paymentRepo.GetPayments().Skip(page * 10).Take(10);
+                IEnumerable<Payment> ps = paymentRepo.GetPayments().AsQueryable()
+                    .Join(transactionRepo.GetTransactions(), x => x.TransactionId, y => y.Id, (x, y) => new Payment(x, y))
+                    .Join(tripRepo.GetTrips(), x => x.TripId, y => y.Id, (x, y) => new Payment(x, y))
+                    .Skip(page * 10).Take(10);
                 if (ps == null)
                 {
                     return BadRequest();
@@ -52,6 +57,9 @@ namespace TnG_BE.Controllers
                 {
                     return BadRequest();
                 }
+                p.Transaction = transactionRepo.GetTransaction(p.TransactionId);
+                p.Trip = tripRepo.GetTrip(p.TripId);
+
                 var json = JsonConvert.SerializeObject(p, Formatting.Indented, new JsonSerializerSettings { PreserveReferencesHandling = PreserveReferencesHandling.None });
 
                 return Content(json, "application/json");

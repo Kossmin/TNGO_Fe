@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using TnG_BE.Models;
+﻿using TnG_BE.Models;
 using TodoApi.IRepository;
 
 namespace TodoApi.Repository
@@ -7,7 +6,7 @@ namespace TodoApi.Repository
     public class StationRepository : IStationRepository
     {
         private readonly TnGContext _context;
-        public StationRepository (TnGContext context)
+        public StationRepository(TnGContext context)
         {
             _context = context;
         }
@@ -32,7 +31,7 @@ namespace TodoApi.Repository
             return ss;
         }
 
-        public  int InsertStation(Station station)
+        public int InsertStation(Station station)
         {
             _context.Stations.Add(station);
             _context.SaveChanges();
