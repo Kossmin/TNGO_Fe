@@ -57,7 +57,7 @@ const StationsTable = (props) => {
       .then((response) => {
         console.log(response);
         setStationData(transformData(response.data.Stations));
-        mapPaging(response.data.TotalPage);
+        mapPaging(response.data.Total);
       });
   };
 
@@ -107,10 +107,11 @@ const StationsTable = (props) => {
   };
 
   const transformData = (data) => {
+    console.log(stationStatusConst);
     return data.map((station) => (
       <tr className="success" key={station.Id}>
         <td>{station.Id.toString()}</td>
-        <td>{stationStatusConst[station.Status].Status}</td>
+        <td>{stationStatusConst[station.Status - 1].Status}</td>
         <td>{station.Capability.toString()}</td>
         <td>{station.Location}</td>
         <td>

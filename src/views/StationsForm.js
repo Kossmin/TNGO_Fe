@@ -56,6 +56,7 @@ const StationsForm = (props) => {
   };
 
   const fetchStatusData = () => {
+    console.log(stationStatus);
     const tranformedStatus = stationStatus.map((status) => {
       return (
         <option key={status.Id} value={status.Id}>
