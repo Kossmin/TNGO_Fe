@@ -208,7 +208,9 @@ const BicycleForm = (props) => {
         <Col md="6" sm="10">
           <Card className="stacked-form">
             <Card.Header>
-              <Card.Title as="h4">Add new Bike</Card.Title>
+              <Card.Title as="h4">
+                {bicycleId != null ? "Update bicycle" : "Add new bicycle"}
+              </Card.Title>
             </Card.Header>
             <Card.Body>
               <Form onSubmit={submitHandler}>

@@ -28,6 +28,7 @@ const BicycleTypeTable = (props) => {
     axios
       .delete("http://18.189.6.9/api/v1/bicycle-type/" + id)
       .then((response) => {
+        console.log("Delete");
         setChanges(id);
       })
       .catch((error) => {

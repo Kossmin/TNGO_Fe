@@ -103,8 +103,9 @@ const Trips = (props) => {
       )
       .then((response) => {
         setIsFull(false);
-        console.log(startDate, endDate);
+        console.log(response.data);
         mapData(response.data.Trips);
+        mapPaging(response.data.TotalPage);
       });
   };
 

@@ -54,6 +54,7 @@ const BicycleTable = (props) => {
       .then((data) => {
         console.log(searchType);
         setBicycleData(mapData(data.data));
+        mapPaing(data.data.TotalPage);
         setIsLoading(false);
       });
   };
@@ -69,8 +70,9 @@ const BicycleTable = (props) => {
           pageIndex
       )
       .then((data) => {
-        console.log(data.data);
         setBicycleData(mapData(data.data));
+
+        mapPaing(data.data.TotalPage);
         setIsLoading(false);
       });
   };

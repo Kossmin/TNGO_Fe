@@ -31,7 +31,7 @@ const BicycleTypeForm = (props) => {
           type: typeInput.current.value,
         })
         .then((response) => {
-          nevigate("/admin/bicycletypes");
+          nevigate.push("/admin/bicycletypes");
         });
     } else {
       axios
@@ -39,7 +39,7 @@ const BicycleTypeForm = (props) => {
           type: typeInput.current.value,
         })
         .then(() => {
-          nevigate("/admin/bicycletypes");
+          nevigate.push("/admin/bicycletypes");
         });
     }
   };
@@ -71,7 +71,9 @@ const BicycleTypeForm = (props) => {
         <Col md="6" sm="10">
           <Card className="stacked-form">
             <Card.Header>
-              <Card.Title as="h4">Add new Bike</Card.Title>
+              <Card.Title as="h4">
+                {typeId == null ? "Add new type" : "Update type"}
+              </Card.Title>
             </Card.Header>
             <Card.Body>
               <Form onSubmit={submitHandler}>
@@ -83,10 +85,10 @@ const BicycleTypeForm = (props) => {
                     type="text"
                   ></Form.Control>
                 </Form.Group>
+                <Button className="btn-fill" type="submit" variant="info">
+                  Submit
+                </Button>
               </Form>
-              <Button className="btn-fill" type="submit" variant="info">
-                Submit
-              </Button>
             </Card.Body>
           </Card>
         </Col>

@@ -57,6 +57,7 @@ const StationsTable = (props) => {
       .then((response) => {
         console.log(response);
         setStationData(transformData(response.data.Stations));
+        mapPaging(response.data.TotalPage);
       });
   };
 
