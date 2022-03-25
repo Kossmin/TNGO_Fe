@@ -10,23 +10,48 @@ import {
   Row,
   Col,
 } from "react-bootstrap";
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import { useEffect, useRef } from "react";
+
+import axios from "axios";
 
 const BicycleTypeForm = (props) => {
   const typeInput = useRef();
   const nevigate = useHistory();
+  let { search } = useLocation();
+  const query = new URLSearchParams(search);
+  const typeId = query.get("id");
 
   const submitHandler = (e) => {
     e.preventDefault();
-    axios
-      .post("http://18.189.6.9/api/v1/bicycle-type", {
-        id: 0,
-        type: typeInput.current.value,
-      })
-      .then((response) => {
-        nevigate("/admin/bicycletypes");
-      });
+    if (typeId == null) {
+      axios
+        .post("http://18.189.6.9/api/v1/bicycle-type", {
+          id: 0,
+          type: typeInput.current.value,
+        })
+        .then((response) => {
+          nevigate("/admin/bicycletypes");
+        });
+    } else {
+      axios
+        .put("http://18.189.6.9/api/v1/bicycle-type/update?Id=" + typeId, {
+          type: typeInput.current.value,
+        })
+        .then(() => {
+          nevigate("/admin/bicycletypes");
+        });
+    }
+  };
+
+  const checkAddUpdate = () => {
+    if (typeId != null) {
+      axios
+        .get("http://18.189.6.9/api/v1/bicycle-type/get/" + typeId)
+        .then((response) => {
+          typeInput.current.value = response.data.Type;
+        });
+    }
   };
 
   const setAxiosDefaultHeader = () => {
@@ -37,6 +62,7 @@ const BicycleTypeForm = (props) => {
 
   useEffect(() => {
     setAxiosDefaultHeader();
+    checkAddUpdate();
   }, []);
 
   return (

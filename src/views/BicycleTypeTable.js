@@ -29,6 +29,9 @@ const BicycleTypeTable = (props) => {
       .delete("http://18.189.6.9/api/v1/bicycle-type/" + id)
       .then((response) => {
         setChanges(id);
+      })
+      .catch((error) => {
+        alert("This type can not be deleted!");
       });
   };
 
@@ -43,6 +46,17 @@ const BicycleTypeTable = (props) => {
               <td>{typeData.Id}</td>
               <td>{typeData.Type}</td>
               <td>
+                <Link to={`/admin/bicycletypes/form?id=${typeData.Id}`}>
+                  <Button
+                    onClick={() => {}}
+                    variant="warning"
+                    size="sm"
+                    className="text-warning btn-link edit"
+                  >
+                    <i className="fa fa-edit" />
+                  </Button>
+                </Link>
+
                 <Button
                   onClick={() => {
                     confirm("Are you sure you want to hide this type");
