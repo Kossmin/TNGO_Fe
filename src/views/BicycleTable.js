@@ -46,7 +46,7 @@ const BicycleTable = (props) => {
     setIsLoading(true);
     return await axios
       .get(
-        "https://18.189.6.9/api/v1/bicycle/search-type?type=" +
+        "http://18.189.6.9/api/v1/bicycle/search-type?type=" +
           searchType +
           "&page=" +
           pageIndex
@@ -64,7 +64,7 @@ const BicycleTable = (props) => {
     setIsLoading(true);
     return await axios
       .get(
-        "https://18.189.6.9/api/v1/bicycle/search-plate?plate=" +
+        "http://18.189.6.9/api/v1/bicycle/search-plate?plate=" +
           plate.current.value +
           "&page=" +
           pageIndex
@@ -79,7 +79,7 @@ const BicycleTable = (props) => {
 
   const fetchTypeData = async () => {
     return await axios
-      .get("https://18.189.6.9/api/v1/bicycle-type")
+      .get("http://18.189.6.9/api/v1/bicycle-type")
       .then((response) => {
         const tmpType = response.data.map((data) => {
           return (
@@ -104,7 +104,7 @@ const BicycleTable = (props) => {
   const fetchBicycleData = async () => {
     setIsLoading(true);
     return await axios
-      .get("https://18.189.6.9/api/v1/bicycle?page=" + pageIndex)
+      .get("http://18.189.6.9/api/v1/bicycle?page=" + pageIndex)
       .then((data) => {
         setTotalPage({ totalPage: data.data.TotalPage, elementArray: [] });
         setBicycleData(mapData(data.data));
