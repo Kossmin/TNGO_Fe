@@ -10,14 +10,15 @@ import {
   Row,
   Col,
 } from "react-bootstrap";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useContext } from "react";
+import { storage } from "../views/Auth/Firebase";
+import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
+import { useHistory, useLocation } from "react-router-dom";
 
 import axios from "axios";
 
 import statusConst from "../assets/const/bicycleStatus";
-import { storage } from "../views/Auth/Firebase";
-import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
-import { useHistory } from "react-router-dom";
+import AuthContext from "store/auth-context";
 
 const BicycleForm = (props) => {
   const [type, setType] = useState();
@@ -30,6 +31,12 @@ const BicycleForm = (props) => {
   const stationInput = useRef();
   const typeInput = useRef();
   const navigate = useHistory();
+  let { search } = useLocation();
+  const query = new URLSearchParams(search);
+  const bicycleId = query.get("id");
+  const [isAdd, setIsAdd] = useState(true);
+
+  const ctx = useContext(AuthContext);
 
   const fetchTypeData = async () => {
     return await axios
@@ -75,20 +82,89 @@ const BicycleForm = (props) => {
       });
   };
 
+  const checkAddUpdate = () => {
+    if (bicycleId != null) {
+      setIsAdd(false);
+      axios
+        .get("http://18.189.6.9/api/v1/bicycle/get/" + bicycleId)
+        .then((response) => {
+          console.log(response);
+          plateInput.current.value = response.data.LicensePlate;
+          descriptionInput.current.value = response.data.Description;
+          statusInput.current.value = response.data.Status;
+          stationInput.current.value = response.data.Station.Id;
+          typeInput.current.value = response.data.Type.Id;
+          setImageUrl(response.data.Image);
+        });
+    }
+  };
+
+  const setAxiosDefaultHeader = () => {
+    axios.defaults.headers = {
+      Authorization: "Bearer " + localStorage.getItem("user"),
+    };
+  };
+
   useEffect(async () => {
+    setAxiosDefaultHeader();
     await fetchTypeData();
     setStatusData();
     await setStationData();
-    console.log(
-      stationInput.current.value,
-      typeInput.current.value,
-      statusInput.current.value
-    );
+    checkAddUpdate();
   }, []);
 
   const submitHandler = (e) => {
     e.preventDefault();
-    uploadFile(e.target[5].files[0]);
+    if (bicycleId != null) {
+      updateFile(e.target[5].files[0]);
+    } else {
+      uploadFile(e.target[5].files[0]);
+    }
+  };
+
+  const updateFile = (file) => {
+    if (!file) {
+      return axios
+        .put("http://18.189.6.9/api/v1/bicycle/update?id=" + bicycleId, {
+          status: statusInput.current.value,
+          description: descriptionInput.current.value,
+          stationId: stationInput.current.value,
+          licensePlate: plateInput.current.value,
+          image: imageUrl,
+          typeId: typeInput.current.value,
+        })
+        .then((response) => {
+          navigate.push("/admin/bicycles");
+        });
+    } else {
+      const storageRef = ref(storage, `/files/${file.name}`);
+      const uploadTask = uploadBytesResumable(storageRef, file);
+
+      uploadTask.on("state_changed", () => {
+        return getDownloadURL(uploadTask.snapshot.ref).then((url) => {
+          const addedBicycle = {
+            status: statusInput.current.value,
+            description: descriptionInput.current.value,
+            stationId: stationInput.current.value,
+            licensePlate: plateInput.current.value,
+            image: url,
+            typeId: typeInput.current.value,
+          };
+
+          axios
+            .put(
+              "http://18.189.6.9/api/v1/bicycle/update?id=" + bicycleId,
+              addedBicycle
+            )
+            .then((response) => {
+              navigate.push("/admin/bicycles");
+            })
+            .catch((error) => {
+              alert("You dont have permisstion to do this action");
+            });
+        });
+      });
+    }
   };
 
   const selectImage = (e) => {
@@ -114,11 +190,14 @@ const BicycleForm = (props) => {
           image: url,
           typeId: typeInput.current.value,
         };
-        console.log(addedBicycle);
+
         axios
           .post("http://18.189.6.9/api/v1/bicycle", addedBicycle)
           .then((response) => {
             navigate.push("/admin/bicycles");
+          })
+          .catch((error) => {
+            alert("You dont have permisstion to do this action");
           });
       });
     });

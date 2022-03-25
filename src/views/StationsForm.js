@@ -12,7 +12,7 @@ import {
 } from "react-bootstrap";
 import { useState, useEffect, useRef } from "react";
 import axios from "axios";
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 
 import HcmDistrict from "../assets/const/HCMDistrict";
 import stationStatus from "../assets/const/stationStatus";
@@ -25,11 +25,28 @@ const StationsForm = (props) => {
   const addressInput = useRef();
   const statusInput = useRef();
   const navigate = useHistory();
+  let { search } = useLocation();
+  const query = new URLSearchParams(search);
+  const stationId = query.get("id");
+
+  const checkAddUpdate = () => {
+    if (stationId != null) {
+      axios
+        .get("http://18.189.6.9/api/v1/station/get/" + stationId)
+        .then((response) => {
+          const spittedAddress = response.data.Location.toString().split("|");
+          districtInput.current.value = spittedAddress[0];
+          addressInput.current.value = spittedAddress[1];
+          capabilityInput.current.value = response.data.Capability;
+          statusInput.current.value = response.data.Status;
+        });
+    }
+  };
 
   const fetchDistrictData = () => {
     const tranformedDistrict = HcmDistrict.map((district) => {
       return (
-        <option key={district.Id} value={district.Id}>
+        <option key={district.Id} value={district.District}>
           {district.District}
         </option>
       );
@@ -52,21 +69,41 @@ const StationsForm = (props) => {
 
   const submitHandler = async (e) => {
     e.preventDefault();
-    axios
-      .post("http://18.189.6.9/api/v1/station", {
-        location:
-          districtInput.current.value + "|" + addressInput.current.value,
-        capability: capabilityInput.current.value,
-        status: statusInput.current.value,
-      })
-      .then((response) => {
-        navigate.push("/admin/station");
-      });
+    if (stationId == null) {
+      axios
+        .post("http://18.189.6.9/api/v1/station", {
+          location:
+            districtInput.current.value + "|" + addressInput.current.value,
+          capability: capabilityInput.current.value,
+          status: statusInput.current.value,
+        })
+        .then((response) => {
+          navigate.push("/admin/stations");
+        });
+    } else {
+      axios
+        .put("http://18.189.6.9/api/v1/station/update?id=" + stationId, {
+          location:
+            districtInput.current.value + "|" + addressInput.current.value,
+          capability: capabilityInput.current.value,
+          status: statusInput.current.value,
+        })
+        .then((response) => {
+          navigate.push("/admin/stations");
+        });
+    }
+  };
+  const setAxiosDefaultHeader = () => {
+    axios.defaults.headers = {
+      Authorization: "Bearer " + localStorage.getItem("user"),
+    };
   };
 
   useEffect(() => {
+    setAxiosDefaultHeader();
     fetchDistrictData();
     fetchStatusData();
+    checkAddUpdate();
   }, []);
 
   return (

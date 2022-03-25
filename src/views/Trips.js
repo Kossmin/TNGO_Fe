@@ -21,26 +21,90 @@ import "./Bicycles.css";
 
 const Trips = (props) => {
   const [pageIndex, setPageIndex] = useState(0);
-  const [totalPage, setTotalPage] = useState(0);
+  const [totalPage, setTotalPage] = useState({
+    totalPage: 0,
+    elementArray: [],
+  });
   const [trips, setTrips] = useState();
+  const startDate = useRef();
+  const endDate = useRef();
+
+  const [isFull, setIsFull] = useState(true);
 
   const fetchTrip = async () => {
     return await axios
       .get("http://18.189.6.9/api/v1/trip?page=" + pageIndex)
       .then((response) => {
-        const transformedTrip = response.data.map((trip) => {
-          return (
-            <tr className="success">
-              <td>1</td>
-              <td>Dakota Rice (Success)</td>
-              <td>14:25</td>
-              <td>16:20</td>
-              <td>Niger</td>
-              <td>Oud-Turnhout</td>
-            </tr>
-          );
-        });
-        setTrips(transformedTrip);
+        setIsFull(true);
+        console.log(response);
+        mapData(response.data.Trips);
+        mapPaging(response.data.TotalPage);
+      });
+  };
+
+  const mapData = (data) => {
+    const transformedTrip = data.map((trip) => {
+      return (
+        <tr key={trip.Id} className="success">
+          <td>{trip.Id}</td>
+          <td>{trip.BicycleId}</td>
+          <td>{trip.BeginTime}</td>
+          <td>{trip.EndTime}</td>
+          <td>{trip.StationStart.Location}</td>
+          <td>{trip.StationEnd.Location}</td>
+        </tr>
+      );
+    });
+    setTrips(transformedTrip);
+  };
+
+  const mapPaging = (numberOfPage) => {
+    let tmp = [];
+    if (pageIndex == 0) {
+      if (numberOfPage <= 3) {
+        for (let i = 0; i < numberOfPage; i++) {
+          tmp.push(i);
+        }
+      } else {
+        for (let i = 0; i < 3; i++) {
+          tmp.push(i);
+        }
+      }
+    } else if (pageIndex == totalPage.totalPage - 1) {
+      if (numberOfPage <= 3) {
+        for (let i = 0; i < numberOfPage; i++) {
+          tmp.push(i);
+        }
+      } else {
+        for (let i = pageIndex - 2; i <= pageIndex; i++) {
+          tmp.push(i);
+        }
+      }
+    } else {
+      for (let i = pageIndex - 1; i <= pageIndex + 1; i++) {
+        tmp.push(i);
+      }
+    }
+    setTotalPage({ totalPage: numberOfPage, elementArray: tmp });
+  };
+
+  const searchTrip = (e) => {
+    e.preventDefault();
+    console.log(startDate.current.value, endDate.current.value);
+
+    return axios
+      .get(
+        "http://18.189.6.9/api/v1/trip/by-date?start=" +
+          startDate.current.value +
+          "&end=" +
+          endDate.current.value +
+          "&page=" +
+          pageIndex
+      )
+      .then((response) => {
+        setIsFull(false);
+        console.log(startDate, endDate);
+        mapData(response.data.Trips);
       });
   };
 
@@ -51,15 +115,28 @@ const Trips = (props) => {
   return (
     <Container>
       <Row className="justify-content-end">
+        {!isFull && (
+          <Col sm="2">
+            <Button onClick={fetchTrip}>Show all trips</Button>
+          </Col>
+        )}
         <Col xs="12" sm="5">
-          <Form className="d-flex">
+          <Form className="d-flex" onSubmit={searchTrip}>
             <FormControl
-              type="search"
-              placeholder="Search By Id"
+              ref={startDate}
+              type="date"
+              placeholder="Start date"
               className="me-2"
-              aria-label="Search"
             />
-            <Button variant="outline-success">Search</Button>
+            <FormControl
+              ref={endDate}
+              type="date"
+              placeholder="End date"
+              className="me-2"
+            />
+            <Button type="submit" variant="outline-success">
+              Search
+            </Button>
           </Form>
         </Col>
       </Row>
@@ -91,13 +168,38 @@ const Trips = (props) => {
       <Row>
         <Col sm="12">
           <Pagination className="pagination pagination-no-border justify-content">
-            <Pagination.Item>«</Pagination.Item>
-            <Pagination.Item>1</Pagination.Item>
-            <Pagination.Item>2</Pagination.Item>
-            <Pagination.Item active>3</Pagination.Item>
-            <Pagination.Item>4</Pagination.Item>
-            <Pagination.Item>5</Pagination.Item>
-            <Pagination.Item>»</Pagination.Item>
+            {pageIndex != 0 && (
+              <Pagination.Item onClick={() => setPageIndex(pageIndex - 1)}>
+                «
+              </Pagination.Item>
+            )}
+            {totalPage.elementArray.map((index) => {
+              if (index == pageIndex) {
+                return (
+                  <Pagination.Item
+                    active
+                    key={index}
+                    onClick={() => setPageIndex(index--)}
+                  >
+                    {index + 1}
+                  </Pagination.Item>
+                );
+              } else {
+                return (
+                  <Pagination.Item
+                    key={index}
+                    onClick={() => setPageIndex(index--)}
+                  >
+                    {index + 1}
+                  </Pagination.Item>
+                );
+              }
+            })}
+            {pageIndex != totalPage.totalPage - 1 && (
+              <Pagination.Item onClick={() => setPageIndex(pageIndex + 1)}>
+                »
+              </Pagination.Item>
+            )}
           </Pagination>
         </Col>
       </Row>

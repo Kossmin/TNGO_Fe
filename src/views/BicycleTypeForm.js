@@ -10,8 +10,35 @@ import {
   Row,
   Col,
 } from "react-bootstrap";
+import { useHistory } from "react-router-dom";
+import { useEffect, useRef } from "react";
 
 const BicycleTypeForm = (props) => {
+  const typeInput = useRef();
+  const nevigate = useHistory();
+
+  const submitHandler = (e) => {
+    e.preventDefault();
+    axios
+      .post("http://18.189.6.9/api/v1/bicycle-type", {
+        id: 0,
+        type: typeInput.current.value,
+      })
+      .then((response) => {
+        nevigate("/admin/bicycletypes");
+      });
+  };
+
+  const setAxiosDefaultHeader = () => {
+    axios.defaults.headers = {
+      Authorization: "Bearer " + localStorage.getItem("user"),
+    };
+  };
+
+  useEffect(() => {
+    setAxiosDefaultHeader();
+  }, []);
+
   return (
     <Container>
       <Row className="justify-content-center">
@@ -21,36 +48,20 @@ const BicycleTypeForm = (props) => {
               <Card.Title as="h4">Add new Bike</Card.Title>
             </Card.Header>
             <Card.Body>
-              <Form action="#" method="#">
+              <Form onSubmit={submitHandler}>
                 <Form.Group>
-                  <label>Description</label>
+                  <label>Bicycle Type</label>
                   <Form.Control
-                    placeholder="Description"
+                    ref={typeInput}
+                    placeholder="Enter type"
                     type="text"
                   ></Form.Control>
-                </Form.Group>
-                <Form.Group>
-                  <label>Plate Number</label>
-                  <Form.Control
-                    placeholder="Enter plate number"
-                    type="text"
-                  ></Form.Control>
-                </Form.Group>
-                <Form.Group>
-                  <Form.Label>Type</Form.Label>
-                  <Form.Control as="select">
-                    <option>Bike</option>
-                    <option>Hybrid</option>
-                    <option>Electric</option>
-                  </Form.Control>
                 </Form.Group>
               </Form>
-            </Card.Body>
-            <Card.Footer>
               <Button className="btn-fill" type="submit" variant="info">
                 Submit
               </Button>
-            </Card.Footer>
+            </Card.Body>
           </Card>
         </Col>
       </Row>

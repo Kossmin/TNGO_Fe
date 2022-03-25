@@ -18,9 +18,17 @@ import {
   Collapse,
 } from "react-bootstrap";
 import "../../views/Component.css";
+import { useContext } from "react";
+import AuthContext from "../../store/auth-context";
 
 function AdminNavbar() {
   const [collapseOpen, setCollapseOpen] = React.useState(false);
+  const ctx = useContext(AuthContext);
+
+  const onLogout = () => {
+    ctx.onLogout();
+  };
+
   return (
     <>
       <Navbar expand="lg">
@@ -47,7 +55,7 @@ function AdminNavbar() {
               </Button>
             </div>
             <Navbar.Brand href="#pablo" onClick={(e) => e.preventDefault()}>
-              Buttons
+              Management website
             </Navbar.Brand>
           </div>
           <button
@@ -61,87 +69,7 @@ function AdminNavbar() {
           </button>
           <Navbar.Collapse className="justify-content-end" in={collapseOpen}>
             <Nav navbar>
-              <Dropdown as={Nav.Item}>
-                <Dropdown.Toggle
-                  as={Nav.Link}
-                  id="dropdown-414718872"
-                  variant="default"
-                >
-                  <i className="nc-icon nc-bell-55 mr-1"></i>
-                  <span className="notification">5</span>
-                  <span className="d-lg-none">Notification</span>
-                </Dropdown.Toggle>
-                <Dropdown.Menu>
-                  <Dropdown.Item
-                    href="#pablo"
-                    onClick={(e) => e.preventDefault()}
-                  >
-                    Notification 1
-                  </Dropdown.Item>
-                  <Dropdown.Item
-                    href="#pablo"
-                    onClick={(e) => e.preventDefault()}
-                  >
-                    Notification 2
-                  </Dropdown.Item>
-                  <Dropdown.Item
-                    href="#pablo"
-                    onClick={(e) => e.preventDefault()}
-                  >
-                    Notification 3
-                  </Dropdown.Item>
-                  <Dropdown.Item
-                    href="#pablo"
-                    onClick={(e) => e.preventDefault()}
-                  >
-                    Notification 4
-                  </Dropdown.Item>
-                  <Dropdown.Item
-                    href="#pablo"
-                    onClick={(e) => e.preventDefault()}
-                  >
-                    Notification 5
-                  </Dropdown.Item>
-                </Dropdown.Menu>
-              </Dropdown>
-              <Dropdown as={Nav.Item}>
-                <Dropdown.Toggle
-                  as={Nav.Link}
-                  id="dropdown-41471887333"
-                  variant="default"
-                >
-                  <i className="nc-icon nc-bullet-list-67"></i>
-                </Dropdown.Toggle>
-                <Dropdown.Menu
-                  alignRight
-                  className="ml-auto"
-                  aria-labelledby="navbarDropdownMenuLink"
-                >
-                  <Dropdown.Item
-                    href="#pablo"
-                    onClick={(e) => e.preventDefault()}
-                  >
-                    <i className="nc-icon nc-email-85"></i>
-                    Messages
-                  </Dropdown.Item>
-                  <Dropdown.Item
-                    href="#pablo"
-                    onClick={(e) => e.preventDefault()}
-                  >
-                    <i className="nc-icon nc-settings-90"></i>
-                    Settings
-                  </Dropdown.Item>
-                  <div className="divider"></div>
-                  <Dropdown.Item
-                    className="text-danger"
-                    href="#pablo"
-                    onClick={(e) => e.preventDefault()}
-                  >
-                    <i className="nc-icon nc-button-power"></i>
-                    Log out
-                  </Dropdown.Item>
-                </Dropdown.Menu>
-              </Dropdown>
+              <Nav.Link onClick={onLogout}>Logout</Nav.Link>
             </Nav>
           </Navbar.Collapse>
         </Container>

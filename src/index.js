@@ -25,14 +25,17 @@ import "assets/css/demo.css";
 
 import AuthLayout from "layouts/Auth.js";
 import AdminLayout from "layouts/Admin.js";
+import AuthContext from "store/auth-context";
+import App from "views/App";
 
 ReactDOM.render(
   <BrowserRouter>
-    <Switch>
+    {/* <Switch>
       <Route path="/auth" render={(props) => <AuthLayout {...props} />} />
       <Route path="/admin" render={(props) => <AdminLayout {...props} />} />
       <Redirect from="/" to="/admin/dashboard" />
-    </Switch>
+    </Switch> */}
+    <App />
   </BrowserRouter>,
   document.getElementById("root")
 );

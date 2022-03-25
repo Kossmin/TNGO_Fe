@@ -19,9 +19,10 @@ import {
 } from "react-bootstrap";
 import { Link } from "react-router-dom";
 
-import { useState, useEffect, useReducer, useRef } from "react";
+import { useState, useEffect, useContext, useRef } from "react";
 import axios from "axios";
 
+import AuthContext from "../store/auth-context";
 import "./Bicycles.css";
 import "./Component.css";
 import bicycleType from "../assets/const/bicycleType";
@@ -39,7 +40,7 @@ const BicycleTable = (props) => {
     elementArray: [],
   });
 
-  const [pagingElement, setPagingElement] = useState();
+  const ctx = useContext(AuthContext);
 
   const searchBicycleWithType = async () => {
     setIsLoading(true);
@@ -168,33 +169,24 @@ const BicycleTable = (props) => {
               : "Deleted"}
           </td>
           <td>
-            <Button
-              onClick={() => {
-                let obj = data.find((o) => o.id === key);
-                alert(
-                  "You've clicked EDIT button on \n{ \nName: " +
-                    obj.name +
-                    ", \nposition: " +
-                    obj.position +
-                    ", \noffice: " +
-                    obj.office +
-                    ", \nage: " +
-                    obj.age +
-                    "\n}."
-                );
-              }}
-              variant="warning"
-              size="sm"
-              className="text-warning btn-link edit"
-            >
-              <i className="fa fa-edit" />
-            </Button>
+            <Link to={`/admin/bicycles/form?id=${bicData.Id}`}>
+              <Button
+                onClick={() => {}}
+                variant="warning"
+                size="sm"
+                className="text-warning btn-link edit"
+              >
+                <i className="fa fa-edit" />
+              </Button>
+            </Link>
+
             <Button
               onClick={() => {
                 if (confirm("Are you sure you want to hide this bicycle?")) {
                   axios
                     .delete("http://18.189.6.9/api/v1/bicycle/" + bicData.Id)
-                    .then(() => setChanges(bicData.Id));
+                    .then(() => setChanges(bicData.Id))
+                    .catch(() => alert("You are not allow to delete this"));
                 }
               }}
               variant="danger"
@@ -209,13 +201,21 @@ const BicycleTable = (props) => {
     });
   };
 
+  const setAxiosDefaultHeader = () => {
+    axios.defaults.headers = {
+      Authorization: "Bearer " + localStorage.getItem("user"),
+    };
+  };
+
   useEffect(() => {
     if (searchType != "") {
       searchBicycleWithType();
     } else {
       fetchBicycleData();
     }
+    setAxiosDefaultHeader();
     fetchTypeData();
+    console.log(ctx.user);
   }, [pageIndex, searchType, plate, changes]);
 
   return (

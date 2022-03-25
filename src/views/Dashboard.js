@@ -21,7 +21,129 @@ import {
   Col,
 } from "react-bootstrap";
 
+import { useState, useEffect } from "react";
+import axios from "axios";
+
 function Dashboard() {
+  const [linechartData, setLinechartData] = useState();
+  const [lineChart, setLineChart] = useState();
+  const [pieChart, setPieChart] = useState();
+  const [revenue, setRevenue] = useState();
+  const [activatedStation, setActivatedStation] = useState();
+
+  const setAxiosDefaultHeader = () => {
+    axios.defaults.headers = {
+      Authorization: "Bearer " + localStorage.getItem("user"),
+    };
+  };
+
+  const fetchLineChart = async () => {
+    return await axios
+      .get("http://18.189.6.9/api/v1/chart/trip-per-month")
+      .then((response) => {
+        const label = response.data.map((lineChartData) => {
+          return lineChartData.Month.toString();
+        });
+        const total = response.data.map((lineChartData) => {
+          return lineChartData.TotalTrip.toString();
+        });
+        const lineChartTransfer = (
+          <ChartistGraph
+            type="Line"
+            data={{
+              labels: [...label].reverse(),
+              series: [total.reverse()],
+            }}
+            options={{
+              low: 0,
+              high: 10,
+              showArea: false,
+              height: "245px",
+              axisX: {
+                showGrid: true,
+              },
+              lineSmooth: false,
+              showLine: true,
+              showPoint: true,
+              chartPadding: {
+                right: -25,
+              },
+            }}
+            responsiveOptions={[
+              [
+                "screen and (max-width: 640px)",
+                {
+                  axisX: {
+                    labelInterpolationFnc: function (value) {
+                      return value[0];
+                    },
+                  },
+                },
+              ],
+            ]}
+          />
+        );
+        setLineChart(lineChartTransfer);
+      });
+  };
+
+  const fetchPieChart = async () => {
+    return await axios
+      .get("http://18.189.6.9/api/v1/chart/bicycle-per-type")
+      .then((response) => {
+        console.log(response.data);
+        const total =
+          response.data.HybridBike +
+          response.data.RoadBike +
+          response.data.SportBike;
+        const hybridBikeValue = Math.floor(
+          (response.data.HybridBike * 100) / total
+        );
+        const roadBikeValue = Math.floor(
+          (response.data.RoadBike * 100) / total
+        );
+        const sportBikeValue = 100 - hybridBikeValue - roadBikeValue;
+        const pieChartTransform = (
+          <ChartistGraph
+            type="Pie"
+            data={{
+              labels: [
+                hybridBikeValue + "%",
+                roadBikeValue + "%",
+                sportBikeValue + "%",
+              ],
+              series: [hybridBikeValue, roadBikeValue, sportBikeValue],
+            }}
+          />
+        );
+        setPieChart(pieChartTransform);
+      });
+  };
+
+  const fetchRevenue = () => {
+    return axios
+      .get("http://18.189.6.9/api/v1/chart/revenue")
+      .then((response) => {
+        setRevenue(response.data.toLocaleString("vi-VN"));
+      });
+  };
+
+  const fetchActiveStation = () => {
+    return axios
+      .get("http://18.189.6.9/api/v1/station/available")
+      .then((response) => {
+        setActivatedStation(response.data);
+      });
+  };
+
+  useEffect(() => {
+    setAxiosDefaultHeader();
+    fetchLineChart();
+    fetchPieChart();
+    fetchRevenue();
+    fetchActiveStation();
+  }, []);
+
   return (
     <>
       <Container fluid>
@@ -38,7 +160,7 @@ function Dashboard() {
                   <Col xs="7">
                     <div className="numbers">
                       <p className="card-category">Actived Stations</p>
-                      <Card.Title as="h4">150</Card.Title>
+                      <Card.Title as="h4">{activatedStation}</Card.Title>
                     </div>
                   </Col>
                 </Row>
@@ -47,7 +169,6 @@ function Dashboard() {
                 <hr></hr>
                 <div className="stats">
                   <i className="fas fa-redo mr-1"></i>
-                  Last days
                 </div>
               </Card.Footer>
             </Card>
@@ -64,7 +185,7 @@ function Dashboard() {
                   <Col xs="7">
                     <div className="numbers">
                       <p className="card-category">Revenue</p>
-                      <Card.Title as="h4">$ 1,345</Card.Title>
+                      <Card.Title as="h4">{revenue} VND</Card.Title>
                     </div>
                   </Col>
                 </Row>
@@ -73,7 +194,6 @@ function Dashboard() {
                 <hr></hr>
                 <div className="stats">
                   <i className="far fa-calendar-alt mr-1"></i>
-                  Last day
                 </div>
               </Card.Footer>
             </Card>
@@ -83,71 +203,14 @@ function Dashboard() {
           <Col md="6">
             <Card>
               <Card.Header>
-                <Card.Title as="h4">User Behavior</Card.Title>
-                <p className="card-category">Multiple Lines Charts</p>
+                <Card.Title as="h4">Trips data</Card.Title>
+                <p className="card-category">Trip through pass 12 months</p>
               </Card.Header>
-              <Card.Body>
-                <ChartistGraph
-                  type="Line"
-                  data={{
-                    labels: [
-                      "'06",
-                      "'07",
-                      "'08",
-                      "'09",
-                      "'10",
-                      "'11",
-                      "'12",
-                      "'13",
-                      "'14",
-                      "'15",
-                    ],
-                    series: [
-                      [287, 385, 490, 554, 586, 698, 752, 788, 846, 944],
-                      [67, 152, 143, 287, 335, 435, 539, 542, 544, 647],
-                      [23, 113, 67, 190, 239, 307, 308, 410, 410, 509],
-                    ],
-                  }}
-                  options={{
-                    low: 0,
-                    high: 1000,
-                    showArea: false,
-                    height: "245px",
-                    axisX: {
-                      showGrid: true,
-                    },
-                    lineSmooth: true,
-                    showLine: true,
-                    showPoint: true,
-                    chartPadding: {
-                      right: -25,
-                    },
-                  }}
-                  responsiveOptions={[
-                    [
-                      "screen and (max-width: 640px)",
-                      {
-                        axisX: {
-                          labelInterpolationFnc: function (value) {
-                            return value[0];
-                          },
-                        },
-                      },
-                    ],
-                  ]}
-                />
-              </Card.Body>
+              <Card.Body>{lineChart}</Card.Body>
               <Card.Footer>
-                <div className="legend">
-                  <i className="fas fa-circle text-info"></i>
-                  Bicycle <i className="fas fa-circle text-danger"></i>
-                  Hybrid bike <i className="fas fa-circle text-warning"></i>
-                  Electric bike
-                </div>
                 <hr></hr>
                 <div className="stats">
                   <i className="fas fa-history"></i>
-                  Updated 3 minutes ago
                 </div>
               </Card.Footer>
             </Card>
@@ -155,29 +218,19 @@ function Dashboard() {
           <Col md="6">
             <Card>
               <Card.Header>
-                <Card.Title as="h4">Public Preferences</Card.Title>
-                <p className="card-category">Pie Chart</p>
+                <Card.Title as="h4">Type of bikes</Card.Title>
               </Card.Header>
-              <Card.Body>
-                <ChartistGraph
-                  type="Pie"
-                  data={{
-                    labels: ["62%", "32%", "6%"],
-                    series: [62, 32, 6],
-                  }}
-                />
-              </Card.Body>
+              <Card.Body>{pieChart}</Card.Body>
               <Card.Footer>
                 <div className="legend">
                   <i className="fas fa-circle text-info"></i>
-                  Open <i className="fas fa-circle text-danger"></i>
-                  Bounce <i className="fas fa-circle text-warning"></i>
-                  Unsubscribe
+                  Hybrid Bike <i className="fas fa-circle text-danger"></i>
+                  Road Bike <i className="fas fa-circle text-warning"></i>
+                  Sport Bike
                 </div>
                 <hr></hr>
                 <div className="stats">
                   <i className="far fa-clock-o"></i>
-                  Campaign sent 2 days ago
                 </div>
               </Card.Footer>
             </Card>

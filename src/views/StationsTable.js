@@ -12,6 +12,7 @@ import {
   Col,
   Pagination,
   FormControl,
+  Dropdown,
 } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
@@ -20,6 +21,7 @@ import "./Bicycles.css";
 import "./Component.css";
 
 import stationStatusConst from "../assets/const/stationStatus";
+import HcmDistrict from "assets/const/HCMDistrict";
 
 const StationsTable = (props) => {
   const [stationData, setStationData] = useState([]);
@@ -29,7 +31,8 @@ const StationsTable = (props) => {
     totalPage: 0,
     elementArray: [],
   });
-  const searchLocationString = useRef();
+  const [searchDistrict, setSearchDistrict] = useState();
+  const [districtString, setDistrictString] = useState();
 
   const fetchData = () => {
     return axios
@@ -40,6 +43,36 @@ const StationsTable = (props) => {
         mapPaging(staData.data.TotalPage);
         setStationData(transformData(staData.data.Stations));
       });
+  };
+
+  const searchByDistrict = async () => {
+    console.log("searchByDistrict");
+    return await axios
+      .get(
+        "http://18.189.6.9/api/v1/station?page=" +
+          pageIndex +
+          "&district=" +
+          districtString
+      )
+      .then((response) => {
+        console.log(response);
+        setStationData(transformData(response.data.Stations));
+      });
+  };
+
+  const fetchDistrictData = () => {
+    const transferDistrict = HcmDistrict.map((district) => {
+      return (
+        <Dropdown.Item
+          onClick={() => setDistrictString(district.District)}
+          key={`${district.Id}district`}
+          value={district.District}
+        >
+          {district.District}
+        </Dropdown.Item>
+      );
+    });
+    setSearchDistrict(transferDistrict);
   };
 
   const mapPaging = (numberOfPage) => {
@@ -80,27 +113,16 @@ const StationsTable = (props) => {
         <td>{station.Capability.toString()}</td>
         <td>{station.Location}</td>
         <td>
-          <Button
-            onClick={() => {
-              let obj = data.find((o) => o.id === key);
-              alert(
-                "You've clicked EDIT button on \n{ \nName: " +
-                  obj.name +
-                  ", \nposition: " +
-                  obj.position +
-                  ", \noffice: " +
-                  obj.office +
-                  ", \nage: " +
-                  obj.age +
-                  "\n}."
-              );
-            }}
-            variant="warning"
-            size="sm"
-            className="text-warning btn-link edit"
-          >
-            <i className="fa fa-edit" />
-          </Button>
+          <Link to={`/admin/stations/form?id=${station.Id}`}>
+            <Button
+              variant="warning"
+              size="sm"
+              className="text-warning btn-link edit"
+            >
+              <i className="fa fa-edit" />
+            </Button>
+          </Link>
+
           <Button
             onClick={() => {
               if (confirm("Are you sure you want to hide this station?")) {
@@ -120,29 +142,46 @@ const StationsTable = (props) => {
     ));
   };
 
-  const searchByLocation = (e) => {
-    e.preventDefault();
+  const setAxiosDefaultHeader = () => {
+    axios.defaults.headers = {
+      Authorization: "Bearer " + localStorage.getItem("user"),
+    };
   };
 
   useEffect(() => {
-    fetchData();
-  }, [pageIndex, changes]);
+    if (districtString != null) {
+      searchByDistrict();
+    } else {
+      fetchData();
+    }
+    fetchDistrictData();
+    setAxiosDefaultHeader();
+  }, [pageIndex, changes, districtString]);
 
   return (
     <Container>
       <Row className="justify-content-between">
-        <Col xs="12" sm="5">
-          <Form className="d-flex" onSubmit={searchByLocation}>
-            <FormControl
-              ref={searchLocationString}
-              type="search"
-              placeholder="Search By Location"
-              className="me-2"
-              aria-label="Search"
-            />
-            <Button variant="outline-success">Search</Button>
-          </Form>
+        <Col md="6">
+          <Dropdown>
+            <Dropdown.Toggle variant="success" id="dropdown-basic">
+              District
+            </Dropdown.Toggle>
+
+            <Dropdown.Menu style={{ overflowY: "scroll", maxHeight: "200px" }}>
+              {searchDistrict}
+            </Dropdown.Menu>
+          </Dropdown>
+          {districtString && (
+            <Button
+              onClick={() => setDistrictString(null)}
+              className="btn-round flex-align-center"
+              variant="info"
+            >
+              <i className="nc-icon nc-simple-add" /> Show all station
+            </Button>
+          )}
         </Col>
+        {/* <Col md="3"></Col> */}
         <Col md="2" className="flex-justify-right">
           <Link to="/admin/stations/form">
             <Button className="btn-round flex-align-center" variant="success">

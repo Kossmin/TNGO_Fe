@@ -1,6 +1,8 @@
 import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { initializeApp } from "firebase/app";
 import { getStorage } from "firebase/storage";
+import { useContext } from "react";
+import AuthContext from "../../store/auth-context";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAwDrRFdYmjHsULu281vBQk4PbKWK1yH2I",
@@ -17,7 +19,11 @@ var app = initializeApp(firebaseConfig);
 export const auth = getAuth();
 const provider = new GoogleAuthProvider();
 
-export const signInWithGoogle = () =>
-  signInWithPopup(auth, provider).then((data) => console.log(data));
+export const signInWithGoogle = () => {
+  return signInWithPopup(auth, provider).then((data) => {
+    console.log(data);
+    return data;
+  });
+};
 
 export const storage = getStorage(app);
